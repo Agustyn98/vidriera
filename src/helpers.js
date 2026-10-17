@@ -82,9 +82,14 @@ function dominioUnico(slug) {
   return dominio;
 }
 
-// Link a la landing publicada: con la demo de dominios activa, el dominio propio del comercio.
-function urlComercio(c) {
-  return DOMINIOS.activo && c.dominio ? `http://${c.dominio}/` : `/c/${c.slug}`;
+// Demo de dominios: el pedido llegó por un .com.ar, o sea desde el Chrome de npm run chrome-demo.
+function enDominios(req) {
+  return req.hostname.endsWith(DOMINIOS.sufijo);
+}
+
+// Link a la landing publicada: en la demo de dominios, el dominio propio del comercio.
+function urlComercio(c, conDominio = false) {
+  return conDominio && c.dominio ? `http://${c.dominio}/` : `/c/${c.slug}`;
 }
 
 function normalizarCodigo(codigo) {
@@ -159,6 +164,7 @@ module.exports = {
   normalizarDominio,
   dominioLibre,
   dominioUnico,
+  enDominios,
   urlComercio,
   soloDigitos,
   linkWhatsapp,

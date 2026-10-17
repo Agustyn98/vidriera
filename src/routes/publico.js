@@ -1,15 +1,15 @@
 const express = require('express');
 const comercios = require('../comercios');
 const { RUBROS, ZONAS, DOMINIOS } = require('../config');
-const { urlComercio } = require('../helpers');
+const { enDominios, urlComercio } = require('../helpers');
 
 const router = express.Router();
 
 // Demo de dominios propios: si el pedido llega con el dominio de un comercio, se muestra su landing.
-// Cualquier otra ruta de ese dominio se manda al sitio de Vidriera.
+// Cualquier otra ruta de ese dominio se manda al sitio de Vidriera. Por localhost no cambia nada.
 router.use((req, res, next) => {
   const host = req.hostname.replace(/^www\./, '');
-  if (!DOMINIOS.activo || host === DOMINIOS.sitio || !host.endsWith(DOMINIOS.sufijo)) return next();
+  if (!enDominios(req) || host === DOMINIOS.sitio) return next();
   const comercio = comercios.porDominio(host);
   if (!comercio || comercio.estado !== 'publicado' || req.path !== '/') {
     return res.redirect(`http://${DOMINIOS.sitio}${comercio ? req.originalUrl : '/'}`);
@@ -35,7 +35,7 @@ router.get('/directorio', (req, res) => {
 router.get('/c/:slug', (req, res, next) => {
   const comercio = comercios.porSlug(req.params.slug);
   if (!comercio || comercio.estado !== 'publicado') return next();
-  if (DOMINIOS.activo && comercio.dominio) return res.redirect(urlComercio(comercio));
+  if (enDominios(req) && comercio.dominio) return res.redirect(urlComercio(comercio, true));
   res.render('landing', { titulo: comercio.nombre, comercio, preview: false });
 });
 

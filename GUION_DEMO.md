@@ -22,7 +22,7 @@ npm start       # abre la app en http://localhost:3000
 
 No cierres la terminal donde corre `npm start`: si la cerrás, la app se detiene.
 
-**Con dominios propios** (cada comercio en su dominio, por ejemplo `donvicente.com.ar`): usá `npm run demo` en vez de `npm start`, y después `npm run chrome-demo` en otra terminal. Se abre un Chrome aparte en `http://vidriera.com.ar`: hacé toda la demo en esa ventana (y su incógnito, con Cmd+Shift+N). Al cerrarlo no queda nada configurado. Detalle en [DOMINIOS_DEMO.md](DOMINIOS_DEMO.md).
+**Con dominios propios** (cada comercio en su dominio, por ejemplo `donvicente.com.ar`): con la app andando (`npm start`), ejecutá `npm run chrome-demo` en otra terminal. Se abre un Chrome aparte en `http://vidriera.com.ar`: hacé toda la demo en esa ventana (y su incógnito, con Cmd+Shift+N o Ctrl+Shift+N). Al cerrarlo no queda nada configurado. Detalle en [DOMINIOS_DEMO.md](DOMINIOS_DEMO.md).
 
 ### Cuentas
 

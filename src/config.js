@@ -69,9 +69,9 @@ const ESTADOS_OPERACION = {
   rechazado: 'Rechazado',
 };
 
-// Dominios propios simulados para la presentación (ver README). Sin DEMO_DOMINIOS=1, las landings se ven en /c/slug.
+// Dominios propios simulados para la presentación (ver README). Se activan solos cuando la app se abre
+// por un dominio .com.ar (el Chrome de npm run chrome-demo); por localhost, las landings se ven en /c/slug.
 const DOMINIOS = {
-  activo: process.env.DEMO_DOMINIOS === '1',
   sitio: process.env.DOMINIO_SITIO || 'vidriera.com.ar',
   sufijo: '.com.ar',
 };

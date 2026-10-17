@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "seed": "node scripts/seed.js",
-    "demo": "DEMO_DOMINIOS=1 node src/server.js",
-    "chrome-demo": "open -na 'Google Chrome' --args --user-data-dir=/tmp/vidriera-chrome-demo --no-first-run --no-default-browser-check --host-resolver-rules=\"MAP *.com.ar 127.0.0.1:${PORT:-3000}\" http://vidriera.com.ar"
+    "chrome-demo": "node scripts/chrome-demo.js"
   },
   "author": "Agustín Adaro, Jorge Tohme, Ezequiel Castro Burgos",
   "license": "UNLICENSED",

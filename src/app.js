@@ -40,7 +40,8 @@ app.use((req, res, next) => {
   delete req.session.flash;
   res.locals.ruta = req.path;
   res.locals.cfg = config;
-  res.locals.h = helpers;
+  const conDominio = helpers.enDominios(req);
+  res.locals.h = { ...helpers, urlComercio: (c) => helpers.urlComercio(c, conDominio) };
   res.locals.modoPagos = pagos.modo;
   res.locals.noindex = false;
   next();

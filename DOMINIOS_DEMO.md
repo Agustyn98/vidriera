@@ -4,14 +4,14 @@ Durante la presentación, cada landing se ve con su propio dominio, por ejemplo 
 
 ## Pasos
 
-1. **Arrancar la app con los dominios activados** (en la carpeta `vidriera`):
+1. **Arrancar la app** (en la carpeta `vidriera`), como siempre:
 
    ```bash
    npm run seed   # opcional: deja los datos de demo a cero
-   npm run demo   # igual que npm start, pero con DEMO_DOMINIOS=1
+   npm start
    ```
 
-   La terminal muestra: `Dominios de demo activos: ...`. No la cierres.
+   No cierres esa terminal. No hay que activar nada: la app usa los dominios propios cuando se entra por un `.com.ar`, y sigue funcionando igual en `http://localhost:3000` (con las landings en `/c/slug`).
 
 2. **Abrir el Chrome de demo** en otra terminal:
 
@@ -19,9 +19,9 @@ Durante la presentación, cada landing se ve con su propio dominio, por ejemplo 
    npm run chrome-demo
    ```
 
-   Se abre una ventana de Chrome nueva, con un perfil aparte y sin tus pestañas, directamente en `http://vidriera.com.ar`.
+   Se abre una ventana de Chrome nueva, con un perfil aparte y sin tus pestañas, directamente en `http://vidriera.com.ar`. Funciona en macOS, Windows y Linux. Si no encuentra Chrome, poné la ruta del ejecutable en `CHROME_PATH` dentro del `.env`.
 
-3. **Hacer toda la demo en esa ventana.** Para el comerciante, abrí una ventana de incógnito desde ese mismo Chrome (Cmd+Shift+N); la regla también aplica ahí.
+3. **Hacer toda la demo en esa ventana.** Para el comerciante, abrí una ventana de incógnito desde ese mismo Chrome (Cmd+Shift+N o Ctrl+Shift+N); la regla también aplica ahí.
 
 ## Qué direcciones funcionan
 
@@ -39,9 +39,10 @@ Durante la presentación, cada landing se ve con su propio dominio, por ejemplo 
 
 ## Sin npm (comando completo)
 
-Si hiciera falta abrirlo a mano, este es el comando que ejecuta `npm run chrome-demo` (si la app usa otro puerto, cambiá el `3000`):
+Si hiciera falta abrirlo a mano, esto es lo que hace `npm run chrome-demo` (si la app usa otro puerto, cambiá el `3000`):
 
 ```bash
+# macOS
 open -na "Google Chrome" --args \
   --user-data-dir=/tmp/vidriera-chrome-demo \
   --no-first-run --no-default-browser-check \
@@ -49,14 +50,19 @@ open -na "Google Chrome" --args \
   http://vidriera.com.ar
 ```
 
+```bat
+:: Windows (cmd)
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --user-data-dir=%TEMP%\vidriera-chrome-demo --no-first-run --no-default-browser-check --host-resolver-rules="MAP *.com.ar 127.0.0.1:3000" http://vidriera.com.ar
+```
+
 - `--host-resolver-rules` hace que esa ventana resuelva cualquier `.com.ar` a tu propia computadora, en el puerto de la app.
 - `--user-data-dir` crea un Chrome independiente. Sin esa opción, si ya tenés Chrome abierto, la regla se ignora.
 
 ## Si algo no anda
 
-- **Chrome muestra el sitio real o un error de "no se puede acceder":** la regla no se aplicó. Cerrá esa ventana de demo (Cmd+Q sobre ella) y volvé a ejecutar `npm run chrome-demo`.
-- **"No se puede conectar" en `vidriera.com.ar`:** la app no está corriendo, o corre en otro puerto. Revisá la terminal de `npm run demo`.
-- **Los links llevan a `/c/...` en vez de al dominio:** la app se arrancó con `npm start`. Cortala (Ctrl+C) y usá `npm run demo`.
+- **Chrome muestra el sitio real o un error de "no se puede acceder":** la regla no se aplicó. Cerrá esa ventana de demo (Cmd+Q sobre ella, o todas sus ventanas en Windows) y volvé a ejecutar `npm run chrome-demo`.
+- **"No se puede conectar" en `vidriera.com.ar`:** la app no está corriendo, o corre en otro puerto. Revisá la terminal de `npm start`.
+- **Los links llevan a `/c/...` en vez de al dominio:** estás entrando por `localhost` en vez de `vidriera.com.ar`. Usá la dirección `http://vidriera.com.ar` en el Chrome de demo.
 - **Chrome avisa que la conexión no es segura:** es normal, la demo usa `http`, no `https`. Elegí continuar al sitio.
 - **Un sitio `.com.ar` real no carga:** es esperable en esa ventana. Usá tu Chrome de siempre para navegar.
 
@@ -65,5 +71,6 @@ open -na "Google Chrome" --args \
 Cerrá la ventana de demo y cortá la app con Ctrl+C. No queda nada instalado ni configurado. Si querés, borrá la carpeta del perfil temporal:
 
 ```bash
-rm -r /tmp/vidriera-chrome-demo
+rm -r /tmp/vidriera-chrome-demo                 # macOS / Linux
+rmdir /s /q %TEMP%\vidriera-chrome-demo         # Windows (cmd)
 ```

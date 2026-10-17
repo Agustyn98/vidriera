@@ -54,14 +54,15 @@ Conviene usar dos ventanas: una normal para el admin y una de incógnito para el
 Para mostrar cada landing con su propio dominio (por ejemplo `http://donvicente.com.ar`) sin comprar dominios ni tocar el sistema:
 
 ```bash
-npm run demo          # la app con DEMO_DOMINIOS=1
-npm run chrome-demo   # abre un Chrome aparte que manda todo *.com.ar a la app
+npm start             # la app, como siempre
+npm run chrome-demo   # en otra terminal: abre un Chrome aparte que manda todo *.com.ar a la app
 ```
 
 - En ese Chrome, Vidriera se ve en `http://vidriera.com.ar` y cada comercio publicado en su dominio. Los comercios nuevos funcionan al instante.
 - El dominio se elige en el formulario del comercio (admin y comerciante). Si el admin lo deja vacío, se arma con el nombre.
 - El truco es la opción `--host-resolver-rules` de Chrome: solo afecta a esa ventana. Al cerrarla no queda nada configurado. En ese Chrome no cargan los sitios `.com.ar` reales.
-- Sin `DEMO_DOMINIOS=1` (`npm start`), las landings siguen en `/c/slug`.
+- No hay que activar nada: la app usa los dominios cuando se entra por un `.com.ar`. Por `http://localhost:3000` (cualquier navegador), las landings siguen en `/c/slug`.
+- `npm run chrome-demo` funciona en macOS, Windows y Linux.
 
 Paso a paso, el comando completo y qué hacer si algo falla: [DOMINIOS_DEMO.md](DOMINIOS_DEMO.md).
 
