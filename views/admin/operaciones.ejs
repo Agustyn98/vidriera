@@ -1,0 +1,52 @@
+<%- include('../partials/header') %>
+
+<hgroup class="encabezado">
+  <h1>Operaciones</h1>
+  <p>Todos los pagos registrados. Modo de pagos: <strong><%= modoPagos === 'simulado' ? 'simulado (sin cobros reales)' : 'Mercado Pago (prueba)' %></strong>.</p>
+</hgroup>
+
+<div class="grid resumen">
+  <article><p class="dato"><%= operaciones.length %></p><p>operaciones</p></article>
+  <article><p class="dato"><%= operaciones.filter((o) => o.estado === 'aprobado').length %></p><p>aprobadas</p></article>
+  <article><p class="dato"><%= h.pesos(totalAprobado) %></p><p>total cobrado</p></article>
+</div>
+
+<% if (!operaciones.length) { %>
+  <p>Todavía no hay operaciones.</p>
+<% } else { %>
+  <div class="overflow-auto">
+    <table class="striped tabla-admin">
+      <caption class="visualmente-oculto">Listado de operaciones</caption>
+      <thead>
+        <tr>
+          <th scope="col">Nº</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Comerciante</th>
+          <th scope="col">Comercio</th>
+          <th scope="col">Servicio</th>
+          <th scope="col" class="num">Importe</th>
+          <th scope="col">Medio</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Comprobante</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% operaciones.forEach((o) => { %>
+          <tr>
+            <td><%= o.id %></td>
+            <td><%= h.fecha(o.fecha, true) %></td>
+            <td><%= o.usuarioNombre %><small class="meta-bloque"><%= o.usuarioEmail %></small></td>
+            <td><%= o.comercioNombre %></td>
+            <td><%= cfg.SERVICIOS[o.servicio].nombre %></td>
+            <td class="num"><%= h.pesos(o.importe) %></td>
+            <td><%= o.medio || '—' %><% if (o.mpPaymentId) { %><small class="meta-bloque">ID <%= o.mpPaymentId %></small><% } %></td>
+            <td><%- include('../partials/estado', { estado: o.estado, tipo: 'operacion' }) %></td>
+            <td><% if (o.estado === 'aprobado') { %><a href="/comprobante/<%= o.id %>"><%= o.nroComprobante %></a><% } else { %>—<% } %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

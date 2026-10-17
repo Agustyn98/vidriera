@@ -1,0 +1,41 @@
+# Dependencias
+node_modules/
+
+# Entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Base de datos SQLite
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+
+# Certificados y claves locales
+certs/
+*.pem
+*.key
+*.crt
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.swp
+*.swo

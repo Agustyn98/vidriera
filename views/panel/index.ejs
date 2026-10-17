@@ -1,0 +1,69 @@
+<%- include('../partials/header') %>
+
+<hgroup class="encabezado">
+  <h1>Mi panel</h1>
+  <p>Hola, <%= usuario.nombre %>. Desde acá administrás tus comercios y contratás servicios.</p>
+</hgroup>
+
+<section aria-labelledby="titulo-mis-comercios">
+  <h2 id="titulo-mis-comercios">Mis comercios</h2>
+  <% if (!comercios.length) { %>
+    <p>Todavía no tenés comercios asociados. Si recibiste un link de vista previa, ingresá su código abajo.</p>
+  <% } %>
+
+  <% comercios.forEach((c) => { %>
+    <article class="comercio-panel" aria-labelledby="comercio-<%= c.id %>">
+      <header>
+        <h3 id="comercio-<%= c.id %>"><%= c.nombre %></h3>
+        <p class="meta"><%= cfg.nombreRubro(c.rubro) %> · <%= cfg.nombreZona(c.zona) %> · Estado: <%- include('../partials/estado', { estado: c.estado }) %></p>
+      </header>
+
+      <% if (c.estado === 'vista_previa') { %>
+        <p>Tu página está en <strong>vista previa</strong>: todavía no aparece en el directorio. Contratá la Landing Profesional y la publicamos en menos de 72 horas.</p>
+      <% } else if (c.estado === 'pendiente_revision') { %>
+        <p><strong>Pago recibido.</strong> Nuestro equipo está revisando tu página y la publica en menos de 72 horas.</p>
+      <% } else if (c.estado === 'publicado') { %>
+        <p>Tu página está <strong>publicada</strong> y aparece en el directorio.</p>
+      <% } else { %>
+        <p>Tu página está <strong>suspendida</strong>. Escribinos a <a href="mailto:soporte@vidriera.com.ar">soporte@vidriera.com.ar</a> para reactivarla.</p>
+      <% } %>
+
+      <ul class="datos-vigencia">
+        <% if (c.mantenimientoHasta) { %><li>Mantenimiento pago hasta el <strong><%= h.fecha(c.mantenimientoHasta) %></strong></li><% } %>
+        <% if (h.destacadoVigente(c)) { %><li>★ Destacado en el directorio hasta el <strong><%= h.fecha(c.destacadoHasta) %></strong></li><% } %>
+      </ul>
+
+      <footer class="acciones">
+        <a href="/panel/comercio/<%= c.id %>" role="button" class="secondary outline">Editar datos<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+        <% if (c.estado === 'publicado') { %>
+          <a href="/c/<%= c.slug %>" role="button" class="secondary outline">Ver mi página<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+        <% } else if (c.estado !== 'suspendido') { %>
+          <a href="/preview/<%= c.previewToken %>" role="button" class="secondary outline">Ver vista previa<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+        <% } %>
+
+        <% const contratar = (servicio, texto) => { %>
+          <form method="post" action="/panel/comercio/<%= c.id %>/contratar" class="en-linea">
+            <input type="hidden" name="servicio" value="<%= servicio %>">
+            <button type="submit"><%= texto %> · <%= h.pesos(cfg.SERVICIOS[servicio].importe) %></button>
+          </form>
+        <% } %>
+        <% if (c.estado === 'vista_previa') contratar('landing', 'Contratar Landing Profesional'); %>
+        <% if (c.estado === 'publicado') { contratar('destacado', h.destacadoVigente(c) ? 'Extender destacado 30 días' : 'Destacar 30 días'); contratar('abono', 'Pagar abono mensual'); } %>
+      </footer>
+    </article>
+  <% }) %>
+</section>
+
+<section aria-labelledby="titulo-reclamar" class="bloque-reclamar">
+  <h2 id="titulo-reclamar">Reclamar un comercio</h2>
+  <form method="post" action="/panel/reclamar" class="form-reclamar">
+    <label for="codigo">Código de la vista previa</label>
+    <div role="group">
+      <input type="text" id="codigo" name="codigo" required maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" class="campo-codigo" aria-describedby="ayuda-reclamar">
+      <button type="submit">Reclamar</button>
+    </div>
+    <small id="ayuda-reclamar">Está en el link que te enviamos: vidriera.com.ar/preview/<strong>CÓDIGO</strong>.</small>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

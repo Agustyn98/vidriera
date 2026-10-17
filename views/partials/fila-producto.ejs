@@ -1,0 +1,10 @@
+<div class="fila grid">
+  <div>
+    <label for="producto-nombre-<%= n %>" class="visualmente-oculto">Producto <%= n %>: nombre</label>
+    <input type="text" id="producto-nombre-<%= n %>" name="productoNombre[]" value="<%= p.nombre %>" maxlength="80" placeholder="Ej.: Pizza muzzarella">
+  </div>
+  <div>
+    <label for="producto-precio-<%= n %>" class="visualmente-oculto">Producto <%= n %>: precio en pesos</label>
+    <input type="text" id="producto-precio-<%= n %>" name="productoPrecio[]" value="<%= p.precio %>" inputmode="numeric" placeholder="Ej.: 12500">
+  </div>
+</div>

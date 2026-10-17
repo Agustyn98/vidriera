@@ -1,0 +1,9 @@
+<article class="tarjeta-comercio<%= c.destacado ? ' es-destacado' : '' %>">
+  <img src="<%= c.fotos[0] || `/img/rubros/${c.rubro}-1.svg` %>" alt="" width="400" height="250" loading="lazy">
+  <div class="tarjeta-cuerpo">
+    <% if (c.destacado) { %><p class="etiqueta-destacado">★ Destacado</p><% } %>
+    <h3><a href="/c/<%= c.slug %>" class="enlace-tarjeta"><%= c.nombre %></a></h3>
+    <p class="meta"><%= cfg.nombreRubro(c.rubro) %> · <%= cfg.nombreZona(c.zona) %></p>
+    <p><%= c.descripcion.length > 110 ? c.descripcion.slice(0, 107).trimEnd() + '…' : c.descripcion %></p>
+  </div>
+</article>

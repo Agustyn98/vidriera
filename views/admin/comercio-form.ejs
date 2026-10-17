@@ -1,0 +1,23 @@
+<%- include('../partials/header') %>
+
+<nav aria-label="Ruta de navegación" class="migas">
+  <ul><li><a href="/admin/comercios">Comercios</a></li><li><%= comercio ? comercio.nombre : 'Nueva vista previa' %></li></ul>
+</nav>
+
+<hgroup class="encabezado">
+  <h1><%= comercio ? `Editar ${comercio.nombre}` : 'Nueva vista previa' %></h1>
+  <% if (comercio) { %>
+    <p>Estado: <%- include('../partials/estado', { estado: comercio.estado }) %> · Código de vista previa: <span class="codigo"><%= comercio.previewToken %></span></p>
+  <% } else { %>
+    <p>Cargá los datos del comercio. Al guardar se genera el link privado de vista previa para enviarle al comerciante.</p>
+  <% } %>
+</hgroup>
+
+<%- include('../partials/form-comercio', {
+  valores, errores, completo: true,
+  accion: comercio ? `/admin/comercios/${comercio.id}` : '/admin/comercios/nuevo',
+  textoBoton: comercio ? 'Guardar cambios' : 'Crear vista previa',
+  cancelar: '/admin/comercios',
+}) %>
+
+<%- include('../partials/footer') %>

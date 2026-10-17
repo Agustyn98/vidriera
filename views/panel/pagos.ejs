@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+
+<hgroup class="encabezado">
+  <h1>Mis pagos</h1>
+  <p>Historial de servicios contratados y sus comprobantes.</p>
+</hgroup>
+
+<% if (!operaciones.length) { %>
+  <p>Todavía no hiciste ningún pago. Podés contratar servicios desde <a href="/panel">tu panel</a>.</p>
+<% } else { %>
+  <div class="overflow-auto">
+    <table class="striped">
+      <caption class="visualmente-oculto">Historial de operaciones</caption>
+      <thead>
+        <tr>
+          <th scope="col">Fecha</th>
+          <th scope="col">Comercio</th>
+          <th scope="col">Servicio</th>
+          <th scope="col" class="num">Importe</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Comprobante</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% operaciones.forEach((o) => { %>
+          <tr>
+            <td><%= h.fecha(o.fecha, true) %></td>
+            <td><%= o.comercioNombre %></td>
+            <td><%= cfg.SERVICIOS[o.servicio].nombre %></td>
+            <td class="num"><%= h.pesos(o.importe) %></td>
+            <td><%- include('../partials/estado', { estado: o.estado, tipo: 'operacion' }) %></td>
+            <td>
+              <% if (o.estado === 'aprobado') { %>
+                <a href="/comprobante/<%= o.id %>">Ver Nº <%= o.nroComprobante %></a>
+              <% } else { %>—<% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

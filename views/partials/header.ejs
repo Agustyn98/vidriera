@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= titulo %> · Vidriera</title>
+  <meta name="description" content="<%= locals.descripcion || 'Vidriera: landing pages profesionales y directorio de comercios del Gran Mendoza. Tu página lista en 72 horas.' %>">
+  <% if (noindex) { %><meta name="robots" content="noindex, nofollow"><% } %>
+  <meta name="theme-color" content="#0b2a4a">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vendor/pico/pico.min.css">
+  <link rel="stylesheet" href="/css/estilos.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <%
+    const actual = (prefijo) => (prefijo === '/' ? ruta === '/' : ruta.startsWith(prefijo)) ? 'aria-current="page"' : '';
+  %>
+  <header class="sitio">
+    <nav class="container" aria-label="Navegación principal">
+      <ul>
+        <li>
+          <a href="/" class="marca" <%- actual('/') %>>
+            <img src="/img/logo.svg" alt="" width="36" height="36">
+            <span>Vidriera</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="menu">
+        <li><a href="/directorio" <%- actual('/directorio') %>>Directorio</a></li>
+        <% if (!usuario) { %>
+          <li><a href="/login" <%- actual('/login') %>>Ingresar</a></li>
+          <li><a href="/registro" role="button" class="boton-chico" <%- actual('/registro') %>>Crear cuenta</a></li>
+        <% } else if (usuario.rol === 'admin') { %>
+          <li><a href="/admin/comercios" <%- actual('/admin/comercios') %>>Comercios</a></li>
+          <li><a href="/admin/operaciones" <%- actual('/admin/operaciones') %>>Operaciones</a></li>
+        <% } else { %>
+          <li><a href="/panel" <%- ruta === '/panel' || ruta.startsWith('/panel/comercio') ? 'aria-current="page"' : '' %>>Mi panel</a></li>
+          <li><a href="/panel/pagos" <%- actual('/panel/pagos') %>>Mis pagos</a></li>
+        <% } %>
+        <% if (usuario) { %>
+          <li>
+            <form method="post" action="/logout" class="en-linea">
+              <button type="submit" class="outline secondary boton-chico">Salir<span class="visualmente-oculto"> (<%= usuario.nombre %>)</span></button>
+            </form>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  </header>
+  <main id="contenido" tabindex="-1" class="<%= locals.anchoCompleto ? 'ancho-completo' : 'container' %>">
+    <% if (flash) { %>
+      <div class="<%= locals.anchoCompleto ? 'container' : '' %>">
+        <p class="flash flash-<%= flash.tipo %>" role="<%= flash.tipo === 'error' ? 'alert' : 'status' %>"><%= flash.texto %></p>
+      </div>
+    <% } %>

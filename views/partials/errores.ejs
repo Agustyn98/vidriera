@@ -1,0 +1,9 @@
+<% const mensajes = Object.values(errores || {}); %>
+<% if (mensajes.length) { %>
+  <div class="resumen-errores" role="alert" tabindex="-1" data-enfocar>
+    <p><strong><%= mensajes.length === 1 ? 'Hay un dato para corregir:' : `Hay ${mensajes.length} datos para corregir:` %></strong></p>
+    <ul>
+      <% mensajes.forEach((m) => { %><li><%= m %></li><% }) %>
+    </ul>
+  </div>
+<% } %>

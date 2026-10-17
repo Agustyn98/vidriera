@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+
+<div class="encabezado-con-accion">
+  <hgroup class="encabezado">
+    <h1>Comercios</h1>
+    <p>Creá vistas previas, revisá los pagos recibidos y publicá o suspendé landings.</p>
+  </hgroup>
+  <p class="acciones">
+    <a href="/admin/comercios/nuevo" role="button">+ Nueva vista previa</a>
+    <a href="/admin/comercios/nuevo?ejemplo=1" role="button" class="secondary outline">Nueva con datos de ejemplo</a>
+  </p>
+</div>
+
+<% const pendientes = comercios.filter((c) => c.estado === 'pendiente_revision').length; %>
+<% if (pendientes) { %>
+  <p class="flash flash-aviso"><strong><%= pendientes === 1 ? 'Hay 1 comercio pendiente de revisión.' : `Hay ${pendientes} comercios pendientes de revisión.` %></strong> Ya pagaron la Landing Profesional y esperan su publicación.</p>
+<% } %>
+
+<p class="visualmente-oculto" role="status" id="estado-copia" aria-live="polite"></p>
+
+<div class="overflow-auto">
+  <table class="striped tabla-admin">
+    <caption class="visualmente-oculto">Listado de comercios</caption>
+    <thead>
+      <tr>
+        <th scope="col">Comercio</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Dueño</th>
+        <th scope="col">Vista previa</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% comercios.forEach((c) => { %>
+        <tr id="comercio-<%= c.id %>">
+          <th scope="row">
+            <%= c.nombre %>
+            <small class="meta-bloque"><%= cfg.nombreRubro(c.rubro) %> · <%= cfg.nombreZona(c.zona) %></small>
+            <% if (h.destacadoVigente(c)) { %><small class="meta-bloque">★ Destacado hasta <%= h.fecha(c.destacadoHasta) %></small><% } %>
+          </th>
+          <td><%- include('../partials/estado', { estado: c.estado }) %></td>
+          <td><%= c.duenoNombre || 'Sin dueño' %><% if (c.duenoEmail) { %><small class="meta-bloque"><%= c.duenoEmail %></small><% } %></td>
+          <td>
+            <% if (c.estado === 'vista_previa' || c.estado === 'pendiente_revision') { %>
+              <a href="/preview/<%= c.previewToken %>"><span class="visualmente-oculto">Vista previa de <%= c.nombre %>, código </span><span class="codigo"><%= c.previewToken %></span></a>
+              <button type="button" class="outline secondary boton-chico" data-copiar="/preview/<%= c.previewToken %>">Copiar link<span class="visualmente-oculto"> de <%= c.nombre %></span></button>
+            <% } else if (c.estado === 'publicado') { %>
+              <a href="/c/<%= c.slug %>">Ver landing<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+            <% } else { %>—<% } %>
+          </td>
+          <td class="celda-acciones">
+            <a href="/admin/comercios/<%= c.id %>" role="button" class="secondary outline boton-chico">Editar<span class="visualmente-oculto"> <%= c.nombre %></span></a>
+            <% if (c.estado === 'pendiente_revision' || c.estado === 'suspendido') { %>
+              <form method="post" action="/admin/comercios/<%= c.id %>/publicar" class="en-linea">
+                <button type="submit" class="boton-chico"><%= c.estado === 'suspendido' ? 'Reactivar' : 'Publicar' %><span class="visualmente-oculto"> <%= c.nombre %></span></button>
+              </form>
+            <% } %>
+            <% if (c.estado === 'publicado') { %>
+              <form method="post" action="/admin/comercios/<%= c.id %>/suspender" class="en-linea" data-confirmar="¿Suspender «<%= c.nombre %>»? Dejará de verse en el directorio.">
+                <button type="submit" class="boton-peligro boton-chico">Suspender<span class="visualmente-oculto"> <%= c.nombre %></span></button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

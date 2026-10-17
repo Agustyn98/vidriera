@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+
+<article class="comprobante" aria-labelledby="titulo-comprobante">
+  <header class="comprobante-encabezado">
+    <p class="marca-comprobante"><img src="/img/logo.svg" alt="" width="40" height="40"> Vidriera</p>
+    <div>
+      <h1 id="titulo-comprobante">Comprobante de pago</h1>
+      <p class="nro">Nº <%= operacion.nroComprobante %></p>
+    </div>
+  </header>
+
+  <dl class="datos-comprobante">
+    <div><dt>Fecha</dt><dd><%= h.fecha(operacion.fecha, true) %></dd></div>
+    <div><dt>Cliente</dt><dd><%= cliente.nombre %> (<%= cliente.email %>)</dd></div>
+    <div><dt>Comercio</dt><dd><%= comercio.nombre %></dd></div>
+    <div><dt>Servicio</dt><dd><%= cfg.SERVICIOS[operacion.servicio].nombre %><small class="meta-bloque"><%= cfg.SERVICIOS[operacion.servicio].detalle %></small></dd></div>
+    <div><dt>Medio de pago</dt><dd><%= operacion.medio || '—' %></dd></div>
+    <div><dt>ID de pago</dt><dd><%= operacion.mpPaymentId || '—' %></dd></div>
+    <div><dt>Estado</dt><dd><%- include('partials/estado', { estado: operacion.estado, tipo: 'operacion' }) %></dd></div>
+    <div class="total"><dt>Importe</dt><dd><%= h.pesos(operacion.importe) %></dd></div>
+  </dl>
+
+  <footer>
+    <p class="leyenda"><strong>No válido como factura.</strong> Comprobante de registro de la operación emitido por Vidriera.</p>
+    <p class="datos-emisor"><small>Vidriera · Mendoza, Argentina · hola@vidriera.com.ar · vidriera.com.ar</small></p>
+  </footer>
+</article>
+
+<p class="acciones no-imprimir">
+  <button type="button" data-imprimir>Imprimir comprobante</button>
+  <a href="<%= usuario.rol === 'admin' ? '/admin/operaciones' : '/panel/pagos' %>" role="button" class="secondary outline">Volver</a>
+</p>
+
+<%- include('partials/footer') %>

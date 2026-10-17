@@ -1,0 +1,84 @@
+<%- include('partials/header', { anchoCompleto: true }) %>
+
+<section class="hero" aria-labelledby="titulo-hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="sobretitulo">Para los comercios del Gran Mendoza</p>
+      <h1 id="titulo-hero">Tu comercio en Internet, listo en 72 horas</h1>
+      <p class="lead">Nosotros armamos tu página con tus productos, precios y horarios, la publicamos con botón de WhatsApp y la mantenemos. Vos solo atendés a tus clientes.</p>
+      <p class="acciones">
+        <a href="/directorio" role="button">Explorar el directorio</a>
+        <a href="/registro" role="button" class="secondary outline boton-claro">Quiero mi página</a>
+      </p>
+    </div>
+    <img src="/img/hero-vidriera.svg" alt="" width="480" height="360" class="hero-ilustracion">
+  </div>
+</section>
+
+<div class="container">
+  <section class="bloque" aria-labelledby="titulo-nosotros">
+    <h2 id="titulo-nosotros">Quiénes somos</h2>
+    <div class="grid tres">
+      <article class="pilar">
+        <h3>Misión</h3>
+        <p>Dar a los pequeños comercios de Mendoza una presencia web propia, lista en 72 horas y mantenida por nosotros, para que sus clientes los encuentren en Google y los contacten por WhatsApp sin que el comerciante tenga que aprender tecnología o depender de redes sociales.</p>
+      </article>
+      <article class="pilar">
+        <h3>Visión</h3>
+        <p>Ser, en cinco años, el directorio comercial de referencia de Mendoza, donde cada barrio y rubro tenga sus negocios publicados y encontrables.</p>
+      </article>
+      <article class="pilar">
+        <h3>Compromiso</h3>
+        <p>Entregar cada página publicada y funcionando en 72 horas desde la confirmación del pago, mantenerla segura y actualizada, y responder las consultas de soporte en menos de 24 horas hábiles, con precios fijos y sin comisiones sobre las ventas del comercio.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" id="servicios" aria-labelledby="titulo-servicios">
+    <h2 id="titulo-servicios">Servicios y precios</h2>
+    <div class="grid cuatro">
+      <article class="servicio">
+        <h3>Vista Previa</h3>
+        <p class="precio">Gratis</p>
+        <p>Armamos una muestra de tu página con tus datos públicos para que veas cómo quedaría antes de contratar.</p>
+      </article>
+      <article class="servicio servicio-principal">
+        <h3><%= cfg.SERVICIOS.landing.nombre %></h3>
+        <p class="precio"><%= h.pesos(cfg.SERVICIOS.landing.importe) %></p>
+        <p><%= cfg.SERVICIOS.landing.detalle %></p>
+      </article>
+      <article class="servicio">
+        <h3><%= cfg.SERVICIOS.abono.nombre %></h3>
+        <p class="precio"><%= h.pesos(cfg.SERVICIOS.abono.importe) %> <small>por mes</small></p>
+        <p><%= cfg.SERVICIOS.abono.detalle %></p>
+      </article>
+      <article class="servicio">
+        <h3><%= cfg.SERVICIOS.destacado.nombre %></h3>
+        <p class="precio"><%= h.pesos(cfg.SERVICIOS.destacado.importe) %> <small>por 30 días</small></p>
+        <p><%= cfg.SERVICIOS.destacado.detalle %></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" aria-labelledby="titulo-pasos">
+    <h2 id="titulo-pasos">Cómo funciona</h2>
+    <ol class="pasos">
+      <li><strong>Te mostramos tu Vista Previa.</strong> Recibís un link con tu página ya armada.</li>
+      <li><strong>Creás tu cuenta.</strong> Ingresás el código de la vista previa y el comercio queda a tu nombre.</li>
+      <li><strong>Contratás y pagás online.</strong> Recibís tu comprobante al instante.</li>
+      <li><strong>Publicamos tu página.</strong> En menos de 72 horas aparecés en el directorio.</li>
+    </ol>
+  </section>
+
+  <% if (destacados.length) { %>
+    <section class="bloque" aria-labelledby="titulo-destacados">
+      <h2 id="titulo-destacados">Comercios destacados</h2>
+      <div class="grilla-comercios">
+        <% destacados.forEach((c) => { %><%- include('partials/tarjeta-comercio', { c }) %><% }) %>
+      </div>
+      <p><a href="/directorio" role="button" class="outline">Ver todos los comercios</a></p>
+    </section>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

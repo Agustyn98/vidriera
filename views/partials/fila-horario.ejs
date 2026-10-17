@@ -1,0 +1,10 @@
+<div class="fila grid">
+  <div>
+    <label for="horario-dias-<%= n %>" class="visualmente-oculto">Horario <%= n %>: días</label>
+    <input type="text" id="horario-dias-<%= n %>" name="horarioDias[]" value="<%= x.dias %>" maxlength="60" placeholder="Ej.: Lunes a viernes">
+  </div>
+  <div>
+    <label for="horario-horas-<%= n %>" class="visualmente-oculto">Horario <%= n %>: horario</label>
+    <input type="text" id="horario-horas-<%= n %>" name="horarioHoras[]" value="<%= x.horas %>" maxlength="60" placeholder="Ej.: 9 a 13 y 17 a 21">
+  </div>
+</div>

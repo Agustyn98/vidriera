@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b7410e"/><stop offset="1" stop-color="#e9960b"/></linearGradient></defs>
+  <rect width="600" height="400" fill="url(#g)"/>
+  <g fill="#fff" opacity=".08"><circle cx="520" cy="60" r="120"/><circle cx="70" cy="360" r="140"/><circle cx="560" cy="380" r="60"/></g>
+  <g fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="2"><circle cx="300" cy="200" r="110"/><circle cx="300" cy="200" r="150"/><circle cx="300" cy="200" r="190"/><circle cx="300" cy="200" r="230"/><circle cx="300" cy="200" r="270"/><circle cx="300" cy="200" r="310"/></g>
+  <circle cx="300" cy="200" r="108" fill="#fff" fill-opacity=".14"/>
+  <g transform="translate(220 120) scale(1.6)"><circle cx="52" cy="52" r="24" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="52" r="13" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 18v18q6 8 12 0V18M18 36v48" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M88 18c8 10 8 26 0 32v34" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>
+</svg>

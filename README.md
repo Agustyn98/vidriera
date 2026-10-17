@@ -1,0 +1,95 @@
+# Vidriera
+
+Landing pages y directorio de comercios del Gran Mendoza. App del TP3 de Comercialización de Servicios.
+
+Node + Express + EJS, SQLite (`vidriera.db`), sesiones con contraseñas cifradas con bcrypt y Pico.css (servido localmente, así la demo no depende de internet).
+
+## Instalar y correr
+
+Requisito: Node.js 20 o superior.
+
+```bash
+npm install
+cp .env.example .env    # si todavía no existe
+npm run seed            # borra la base y carga los datos de demo
+npm start               # http://localhost:3000
+```
+
+Para volver la demo a cero, repetí `npm run seed` (si el servidor está corriendo, reinicialo también, porque las sesiones viven en memoria).
+
+## Usuarios de prueba
+
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| Admin | admin | admin |
+| Comerciante | comercio | comercio |
+
+En el login se puede escribir solo el usuario o el email completo (`admin@vidriera.com.ar`, `comercio@vidriera.com.ar`). Las cuentas nuevas que se registran sí tienen que usar una contraseña de al menos 8 caracteres, con letras y números.
+
+El seed carga 10 comercios publicados (Pizzería Don Vicente y Vinoteca El Lagar están destacados) y **Panadería La Espiga**, en Vista Previa y sin dueño, con el código **DEMO-2026**.
+
+## Guion de la demo (unos 10 minutos)
+
+Conviene usar dos ventanas: una normal para el admin y una de incógnito para el comerciante.
+
+1. **Inicio** (`/`): misión, visión y compromiso, servicios con precios y comercios destacados.
+2. **Directorio** (`/directorio`): buscar «pizza» o filtrar por rubro y zona. Los destacados aparecen primero. Abrir una landing y mostrar los botones de WhatsApp y Llamar.
+3. **Admin crea la vista previa** (paso 1): ingresar como admin y, en *Comercios*, usar *Nueva con datos de ejemplo* y luego *Crear vista previa*. Se genera un código y el botón *Copiar link*.
+   Para ir más rápido, el resto del guion usa la vista previa del seed, `/preview/DEMO-2026`.
+4. **El comerciante ve su vista previa** (paso 2): abrir `http://localhost:3000/preview/DEMO-2026` y mostrar el cartel de «Vista previa». Ese comercio no figura en el directorio.
+5. **Reclamar el comercio** (paso 3): ingresar como comerciante y escribir `DEMO-2026` en *Reclamar un comercio*.
+   Otra opción es registrar un usuario nuevo desde el link del cartel: el código ya viene cargado.
+   Si quieren, editar algún producto o el horario desde *Editar datos*.
+6. **Contratar y pagar** (pasos 4 y 5): tocar *Contratar Landing Profesional · $ 50.000*, que lleva al checkout simulado. Elegir un medio y tocar *Pagar*. El servidor verifica el pago y el comercio pasa a «Pendiente de revisión».
+7. **Comprobante** (paso 6): se abre solo después del pago. Tocar *Imprimir comprobante*: en la impresión solo sale el ticket, con la leyenda «No válido como factura».
+8. **El admin publica** (paso 7): en *Comercios* aparece el aviso «1 comercio pendiente de revisión». Tocar *Publicar* y mostrar que ya figura en el directorio.
+9. **Destacado** (paso 8): como comerciante, tocar *Destacar 30 días* y pagar. En el directorio, La Espiga pasa a aparecer primero.
+10. **Operaciones**: como admin, abrir *Operaciones* para ver todos los pagos y el total cobrado.
+    Si se quiere mostrar un pago rechazado, tocar *Pagar abono mensual* y después *Rechazar pago*.
+
+## Pagos
+
+Todo el código de pagos está en `src/pagos/`. El resto de la app usa solo `crearPago()` y `verificarPago()`; la interfaz está documentada en `src/pagos/index.js`.
+La variable `PAGOS_MODO` del `.env` elige la implementación:
+
+- `simulado` (implementado): pantalla propia de checkout con los botones *Pagar* y *Rechazar*. No usa credenciales ni hace cobros.
+- `mercadopago` (pendiente): `src/pagos/mercadopago.js` tiene los pasos para Checkout Pro en modo prueba. Para pasar a Mercado Pago alcanza con completar ese archivo y cargar `MP_ACCESS_TOKEN` en `.env`.
+
+El precio de cada servicio lo define el servidor (`src/config.js`). Además, la aprobación de un pago es idempotente: si el comerciante recarga la página de retorno, el pago no se procesa dos veces.
+
+## Seguridad
+
+- Contraseñas cifradas con bcrypt y sesión nueva en cada ingreso.
+- Rutas protegidas por rol en el servidor: `/panel` es solo para comerciantes y `/admin` solo para el admin.
+- Un comerciante solo ve y edita sus propios comercios, operaciones y comprobantes. Si intenta abrir los de otro, recibe un 404.
+- `.env` y la base de datos están en `.gitignore`.
+
+### HTTPS local (opcional)
+
+En producción el HTTPS lo da el hosting con su certificado. Para mostrarlo en local:
+
+```bash
+mkdir certs
+openssl req -x509 -newkey rsa:2048 -nodes -days 365 -subj "/CN=localhost" \
+  -keyout certs/localhost-key.pem -out certs/localhost.pem
+```
+
+Después, en `.env`, cargar `HTTPS_CERT=certs/localhost.pem` y `HTTPS_KEY=certs/localhost-key.pem`, y abrir `https://localhost:3000`. El navegador va a advertir que el certificado es autofirmado.
+
+## Estructura
+
+```
+src/
+  server.js        arranque (HTTP o HTTPS)
+  app.js           configuración de Express
+  db.js            SQLite: tablas usuarios, comercios y operaciones
+  config.js        precios, rubros, zonas y plantillas
+  comercios.js     consultas y validación de comercios
+  operaciones.js   reglas de pagos y efectos (revisión, destacado)
+  reclamo.js       reclamar un comercio con su código
+  pagos/           módulo de pagos (simulado / mercadopago)
+  routes/          público, auth, panel, admin y pagos
+views/             plantillas EJS
+public/            CSS, JS y las imágenes SVG de muestra
+scripts/seed.js    datos de demo
+```

@@ -1,0 +1,90 @@
+<%- include('partials/header', { anchoCompleto: true, descripcion: `${comercio.nombre}: ${cfg.nombreRubro(comercio.rubro)} en ${cfg.nombreZona(comercio.zona)}. ${comercio.descripcion.slice(0, 120)}` }) %>
+<%
+  const wa = h.linkWhatsapp(comercio.whatsapp, comercio.nombre);
+  const tel = h.linkTelefono(comercio.telefono || comercio.whatsapp);
+%>
+
+<% if (preview) { %>
+  <aside class="aviso-preview" aria-label="Aviso de vista previa">
+    <div class="container">
+      <p><strong>Vista previa.</strong> Esta página todavía no está publicada ni aparece en el directorio.</p>
+      <% if (!comercio.duenoId) { %>
+        <p>¿Es tu comercio? Usá el código <strong class="codigo"><%= comercio.previewToken %></strong> para
+          <a href="/registro?codigo=<%= comercio.previewToken %>">crear tu cuenta</a> o, si ya tenés una, <a href="/login">ingresá</a> y reclamalo desde tu panel.</p>
+      <% } else if (comercio.estado === 'pendiente_revision') { %>
+        <p>El pago ya fue recibido: nuestro equipo está revisando la página para publicarla.</p>
+      <% } %>
+    </div>
+  </aside>
+<% } %>
+
+<div class="landing plantilla-<%= comercio.plantilla %>">
+  <header class="landing-hero">
+    <div class="container">
+      <p class="landing-rubro"><%= cfg.nombreRubro(comercio.rubro) %> · <%= cfg.nombreZona(comercio.zona) %></p>
+      <h1><%= comercio.nombre %></h1>
+      <p class="lead"><%= comercio.descripcion %></p>
+      <p class="acciones">
+        <% if (wa) { %><a href="<%= wa %>" role="button" class="boton-whatsapp" target="_blank" rel="noopener">Escribir por WhatsApp<span class="visualmente-oculto"> (se abre en otra pestaña)</span></a><% } %>
+        <% if (tel) { %><a href="<%= tel %>" role="button" class="boton-llamar">Llamar</a><% } %>
+      </p>
+    </div>
+  </header>
+
+  <div class="container landing-cuerpo">
+    <% if (comercio.fotos.length) { %>
+      <section aria-labelledby="titulo-fotos">
+        <h2 id="titulo-fotos">Fotos</h2>
+        <div class="galeria">
+          <% comercio.fotos.forEach((url, i) => { %>
+            <img src="<%= url %>" alt="<%= comercio.nombre %>, imagen <%= i + 1 %> de <%= comercio.fotos.length %>" width="600" height="400" loading="<%= i < 2 ? 'eager' : 'lazy' %>">
+          <% }) %>
+        </div>
+      </section>
+    <% } %>
+
+    <div class="grid landing-datos">
+      <% if (comercio.productos.length) { %>
+        <section aria-labelledby="titulo-productos">
+          <h2 id="titulo-productos">Productos y precios</h2>
+          <table class="tabla-precios">
+            <caption class="visualmente-oculto">Productos de <%= comercio.nombre %> y sus precios</caption>
+            <thead><tr><th scope="col">Producto</th><th scope="col" class="num">Precio</th></tr></thead>
+            <tbody>
+              <% comercio.productos.forEach((p) => { %>
+                <tr><th scope="row"><%= p.nombre %></th><td class="num"><%= h.pesos(p.precio) %></td></tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </section>
+      <% } %>
+
+      <div>
+        <% if (comercio.horarios.length) { %>
+          <section aria-labelledby="titulo-horarios">
+            <h2 id="titulo-horarios">Horarios</h2>
+            <table>
+              <caption class="visualmente-oculto">Horarios de atención</caption>
+              <tbody>
+                <% comercio.horarios.forEach((x) => { %>
+                  <tr><th scope="row"><%= x.dias %></th><td><%= x.horas %></td></tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </section>
+        <% } %>
+        <section aria-labelledby="titulo-contacto">
+          <h2 id="titulo-contacto">Contacto y ubicación</h2>
+          <ul class="lista-contacto">
+            <% if (comercio.direccion) { %><li><strong>Dirección:</strong> <%= comercio.direccion %></li><% } %>
+            <% if (comercio.whatsapp) { %><li><strong>WhatsApp:</strong> <%= comercio.whatsapp %></li><% } %>
+            <% if (comercio.telefono) { %><li><strong>Teléfono:</strong> <%= comercio.telefono %></li><% } %>
+          </ul>
+        </section>
+      </div>
+    </div>
+    <p class="hecho-con"><small>Página creada con <a href="/">Vidriera</a>.</small></p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

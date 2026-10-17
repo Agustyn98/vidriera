@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout de prueba · Pago simulado</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vendor/pico/pico.min.css">
+  <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body class="checkout">
+  <header class="checkout-barra">
+    <div class="container">
+      <p><strong>PagoSimulado</strong> · Entorno de prueba</p>
+    </div>
+  </header>
+  <main id="contenido" class="container">
+    <article class="checkout-caja">
+      <h1>Confirmá tu pago</h1>
+      <p class="aviso-simulado" role="note">Modo simulado: no se realiza ningún cobro real. Esta pantalla reemplaza al checkout de Mercado Pago durante la demo.</p>
+
+      <dl class="datos-comprobante">
+        <div><dt>Vendedor</dt><dd>Vidriera</dd></div>
+        <div><dt>Servicio</dt><dd><%= pref.titulo %></dd></div>
+        <div><dt>Comercio</dt><dd><%= pref.comercio %></dd></div>
+        <div class="total"><dt>Total a pagar</dt><dd><%= h.pesos(pref.importe) %></dd></div>
+      </dl>
+
+      <form method="post" action="/checkout-simulado/<%= prefId %>">
+        <fieldset>
+          <legend>Medio de pago</legend>
+          <% Object.entries(MEDIOS).forEach(([id, nombre], i) => { %>
+            <label><input type="radio" name="medio" value="<%= id %>" <%= i === 0 ? 'checked' : '' %>> <%= nombre %></label>
+          <% }) %>
+        </fieldset>
+        <div class="acciones">
+          <button type="submit" name="accion" value="pagar">Pagar <%= h.pesos(pref.importe) %></button>
+          <button type="submit" name="accion" value="rechazar" class="boton-peligro">Rechazar pago</button>
+        </div>
+      </form>
+    </article>
+  </main>
+</body>
+</html>

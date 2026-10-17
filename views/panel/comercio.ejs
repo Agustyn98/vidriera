@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+
+<nav aria-label="Ruta de navegación" class="migas">
+  <ul><li><a href="/panel">Mi panel</a></li><li><%= comercio.nombre %></li></ul>
+</nav>
+
+<hgroup class="encabezado">
+  <h1>Editar <%= comercio.nombre %></h1>
+  <p><%= cfg.nombreRubro(comercio.rubro) %> · <%= cfg.nombreZona(comercio.zona) %>. Para cambiar el nombre, el rubro o la plantilla, escribinos a soporte.</p>
+</hgroup>
+
+<%- include('../partials/form-comercio', {
+  valores, errores, completo: false,
+  accion: `/panel/comercio/${comercio.id}`,
+  textoBoton: 'Guardar cambios',
+  cancelar: '/panel',
+}) %>
+
+<%- include('../partials/footer') %>

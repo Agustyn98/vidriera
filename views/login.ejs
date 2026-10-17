@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<article class="formulario-angosto">
+  <h1>Ingresar</h1>
+  <%- include('partials/errores', { errores }) %>
+  <form method="post" action="/login" novalidate>
+    <label for="email">Email o usuario</label>
+    <input type="text" id="email" name="email" value="<%= valores.email || '' %>" autocomplete="username" autocapitalize="none" spellcheck="false" required <%- h.invalido(errores, 'email') %>>
+    <%- h.errorCampo(errores, 'email') %>
+
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" required <%- h.invalido(errores, 'password') %>>
+    <%- h.errorCampo(errores, 'password') %>
+
+    <button type="submit">Ingresar</button>
+  </form>
+  <p>¿No tenés cuenta? <a href="/registro">Creá una gratis</a>.</p>
+</article>
+
+<%- include('partials/footer') %>

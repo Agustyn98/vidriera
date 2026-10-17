@@ -1,0 +1,121 @@
+<%#
+  Formulario compartido de comercio.
+  Parámetros: valores, errores, completo (campos de admin), accion, textoBoton, cancelar
+%>
+<%
+  const productos = [...(valores.productos || [])];
+  while (productos.length < 3) productos.push({ nombre: '', precio: '' });
+  const horarios = [...(valores.horarios || [])];
+  while (horarios.length < 2) horarios.push({ dias: '', horas: '' });
+  const fotos = [...(valores.fotos || [])];
+  while (fotos.length < 2) fotos.push('');
+%>
+<%- include('errores', { errores }) %>
+
+<form method="post" action="<%= accion %>" novalidate class="form-comercio">
+  <% if (completo) { %>
+    <fieldset>
+      <legend>Datos del comercio</legend>
+      <label for="nombre">Nombre del comercio</label>
+      <input type="text" id="nombre" name="nombre" value="<%= valores.nombre || '' %>" required maxlength="80" <%- h.invalido(errores, 'nombre') %>>
+      <%- h.errorCampo(errores, 'nombre') %>
+
+      <div class="grid">
+        <div>
+          <label for="rubro">Rubro</label>
+          <select id="rubro" name="rubro" required <%- h.invalido(errores, 'rubro') %>>
+            <option value="">Elegí un rubro</option>
+            <% cfg.RUBROS.forEach((r) => { %><option value="<%= r.id %>" <%= valores.rubro === r.id ? 'selected' : '' %>><%= r.nombre %></option><% }) %>
+          </select>
+          <%- h.errorCampo(errores, 'rubro') %>
+        </div>
+        <div>
+          <label for="zona">Zona</label>
+          <select id="zona" name="zona" required <%- h.invalido(errores, 'zona') %>>
+            <option value="">Elegí una zona</option>
+            <% cfg.ZONAS.forEach((z) => { %><option value="<%= z.id %>" <%= valores.zona === z.id ? 'selected' : '' %>><%= z.nombre %></option><% }) %>
+          </select>
+          <%- h.errorCampo(errores, 'zona') %>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="opciones-plantilla" <%- h.describir(errores, 'plantilla') %>>
+      <legend>Plantilla de colores</legend>
+      <% cfg.PLANTILLAS.forEach((p) => { %>
+        <label>
+          <input type="radio" name="plantilla" value="<%= p.id %>" <%= valores.plantilla === p.id ? 'checked' : '' %>>
+          <span class="muestra muestra-<%= p.id %>" aria-hidden="true"></span> <%= p.nombre %>
+        </label>
+      <% }) %>
+      <%- h.errorCampo(errores, 'plantilla') %>
+    </fieldset>
+  <% } %>
+
+  <label for="descripcion">Descripción</label>
+  <textarea id="descripcion" name="descripcion" rows="4" maxlength="600" required <%- h.invalido(errores, 'descripcion', 'ayuda-descripcion') %>><%= valores.descripcion || '' %></textarea>
+  <small id="ayuda-descripcion">Contá qué ofrecés y qué te diferencia. Entre 20 y 600 caracteres.</small>
+  <%- h.errorCampo(errores, 'descripcion') %>
+
+  <fieldset>
+    <legend>Contacto</legend>
+    <div class="grid">
+      <div>
+        <label for="whatsapp">WhatsApp</label>
+        <input type="tel" id="whatsapp" name="whatsapp" value="<%= valores.whatsapp || '' %>" placeholder="261 555-0101" autocomplete="tel" <%- h.invalido(errores, 'whatsapp') %>>
+        <%- h.errorCampo(errores, 'whatsapp') %>
+      </div>
+      <div>
+        <label for="telefono">Teléfono <span class="opcional">(opcional)</span></label>
+        <input type="tel" id="telefono" name="telefono" value="<%= valores.telefono || '' %>" placeholder="261 555-0102" <%- h.invalido(errores, 'telefono') %>>
+        <%- h.errorCampo(errores, 'telefono') %>
+      </div>
+    </div>
+    <label for="direccion">Dirección <span class="opcional">(opcional)</span></label>
+    <input type="text" id="direccion" name="direccion" value="<%= valores.direccion || '' %>" maxlength="120" placeholder="San Martín 1250, Godoy Cruz" autocomplete="street-address" <%- h.invalido(errores, 'direccion') %>>
+    <%- h.errorCampo(errores, 'direccion') %>
+  </fieldset>
+
+  <fieldset <%- h.describir(errores, 'horarios', 'ayuda-horarios') %>>
+    <legend>Horarios</legend>
+    <small id="ayuda-horarios">Una fila por cada grupo de días. Para quitar una fila, dejala vacía.</small>
+    <%- h.errorCampo(errores, 'horarios') %>
+    <div class="encabezado-filas" aria-hidden="true"><span>Días</span><span>Horario</span></div>
+    <div id="filas-horarios">
+      <% horarios.forEach((x, i) => { %><%- include('fila-horario', { n: i + 1, x }) %><% }) %>
+    </div>
+    <template id="plantilla-horarios"><%- include('fila-horario', { n: '__N__', x: { dias: '', horas: '' } }) %></template>
+    <button type="button" class="outline secondary boton-chico" data-agregar="horarios">+ Agregar horario</button>
+  </fieldset>
+
+  <fieldset <%- h.describir(errores, 'productos', 'ayuda-productos') %>>
+    <legend>Productos o servicios</legend>
+    <small id="ayuda-productos">Precio en pesos, sin centavos (por ejemplo 12500). Para quitar un producto, dejá la fila vacía.</small>
+    <%- h.errorCampo(errores, 'productos') %>
+    <div class="encabezado-filas" aria-hidden="true"><span>Producto</span><span>Precio ($)</span></div>
+    <div id="filas-productos">
+      <% productos.forEach((p, i) => { %><%- include('fila-producto', { n: i + 1, p }) %><% }) %>
+    </div>
+    <template id="plantilla-productos"><%- include('fila-producto', { n: '__N__', p: { nombre: '', precio: '' } }) %></template>
+    <button type="button" class="outline secondary boton-chico" data-agregar="productos">+ Agregar producto</button>
+  </fieldset>
+
+  <fieldset <%- h.describir(errores, 'fotos', 'ayuda-fotos') %>>
+    <legend>Fotos</legend>
+    <small id="ayuda-fotos">Dirección de cada imagen. Podés elegir una de las imágenes de muestra de la lista o pegar un link (https://…).</small>
+    <%- h.errorCampo(errores, 'fotos') %>
+    <div id="filas-fotos">
+      <% fotos.forEach((u, i) => { %><%- include('fila-foto', { n: i + 1, u }) %><% }) %>
+    </div>
+    <template id="plantilla-fotos"><%- include('fila-foto', { n: '__N__', u: '' }) %></template>
+    <datalist id="imagenes-demo">
+      <% cfg.IMAGENES_DEMO.forEach((img) => { %><option value="<%= img %>"></option><% }) %>
+    </datalist>
+    <button type="button" class="outline secondary boton-chico" data-agregar="fotos">+ Agregar foto</button>
+  </fieldset>
+
+  <div class="acciones">
+    <button type="submit"><%= textoBoton %></button>
+    <a href="<%= cancelar %>" role="button" class="secondary outline">Cancelar</a>
+  </div>
+</form>
