@@ -32,6 +32,24 @@ router.get('/directorio', (req, res) => {
   res.render('directorio', { titulo: 'Directorio de comercios', filtros, resultados });
 });
 
+// Mapa del sitio para buscadores: solo páginas públicas (sin vistas previas ni paneles).
+router.get('/sitemap.xml', (req, res) => {
+  const base = `${req.protocol}://${req.get('host')}`;
+  const absoluta = (url) => (url.startsWith('http') ? url : base + url);
+  const urls = ['/', '/directorio', ...comercios.publicados().map(urlComercio)].map(absoluta);
+  const items = urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n');
+  res.type('application/xml').send(
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items}\n</urlset>\n`
+  );
+});
+
+router.get('/robots.txt', (req, res) => {
+  const base = `${req.protocol}://${req.get('host')}`;
+  res.type('text/plain').send(
+    `User-agent: *\nDisallow: /panel\nDisallow: /admin\nDisallow: /preview/\nSitemap: ${base}/sitemap.xml\n`
+  );
+});
+
 router.get('/c/:slug', (req, res, next) => {
   const comercio = comercios.porSlug(req.params.slug);
   if (!comercio || comercio.estado !== 'publicado') return next();

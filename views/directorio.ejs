@@ -1,52 +1,79 @@
-<%- include('partials/header', { descripcion: 'Directorio de comercios del Gran Mendoza: buscá por rubro, zona o nombre.' }) %>
+<%- include('partials/header', { anchoCompleto: true, descripcion: 'Directorio de comercios del Gran Mendoza: buscá por rubro, zona o nombre.' }) %>
+<%
+  // Link al directorio conservando la búsqueda y la zona, para los accesos rápidos por rubro.
+  const urlRubro = (rubro) => {
+    const params = new URLSearchParams(Object.entries({ ...filtros, rubro }).filter(([, v]) => v));
+    return params.size ? `/directorio?${params}` : '/directorio';
+  };
+%>
 
-<hgroup class="encabezado">
-  <h1>Directorio de comercios</h1>
-  <p>Encontrá comercios, profesionales y oficios del Gran Mendoza.</p>
-</hgroup>
+<section class="directorio-hero">
+  <div class="container">
+    <hgroup>
+      <p class="sobretitulo">Gran Mendoza</p>
+      <h1>Directorio de comercios</h1>
+      <p>Encontrá comercios, profesionales y oficios cerca tuyo.</p>
+    </hgroup>
 
-<form method="get" action="/directorio" role="search" class="buscador" aria-label="Buscar comercios">
-  <div class="grid">
-    <div>
-      <label for="q">Buscar</label>
-      <input type="search" id="q" name="q" value="<%= filtros.q %>" placeholder="Por ejemplo: pizza, contador, vino" maxlength="80">
-    </div>
-    <div>
-      <label for="rubro">Rubro</label>
-      <select id="rubro" name="rubro">
-        <option value="">Todos los rubros</option>
-        <% cfg.RUBROS.forEach((r) => { %>
-          <option value="<%= r.id %>" <%= filtros.rubro === r.id ? 'selected' : '' %>><%= r.nombre %></option>
-        <% }) %>
-      </select>
-    </div>
-    <div>
-      <label for="zona">Zona</label>
-      <select id="zona" name="zona">
-        <option value="">Todas las zonas</option>
-        <% cfg.ZONAS.forEach((z) => { %>
-          <option value="<%= z.id %>" <%= filtros.zona === z.id ? 'selected' : '' %>><%= z.nombre %></option>
-        <% }) %>
-      </select>
-    </div>
+    <form method="get" action="/directorio" role="search" class="buscador" aria-label="Buscar comercios">
+      <div class="buscador-campos">
+        <div>
+          <label for="q">Buscar</label>
+          <input type="search" id="q" name="q" value="<%= filtros.q %>" placeholder="Por ejemplo: pizza, contador, vino" maxlength="80">
+        </div>
+        <div>
+          <label for="rubro">Rubro</label>
+          <select id="rubro" name="rubro">
+            <option value="">Todos los rubros</option>
+            <% cfg.RUBROS.forEach((r) => { %>
+              <option value="<%= r.id %>" <%= filtros.rubro === r.id ? 'selected' : '' %>><%= r.nombre %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div>
+          <label for="zona">Zona</label>
+          <select id="zona" name="zona">
+            <option value="">Todas las zonas</option>
+            <% cfg.ZONAS.forEach((z) => { %>
+              <option value="<%= z.id %>" <%= filtros.zona === z.id ? 'selected' : '' %>><%= z.nombre %></option>
+            <% }) %>
+          </select>
+        </div>
+        <button type="submit">Buscar</button>
+      </div>
+    </form>
   </div>
-  <div class="acciones">
-    <button type="submit">Buscar</button>
-    <% if (filtros.q || filtros.rubro || filtros.zona) { %><a href="/directorio" role="button" class="secondary outline">Limpiar filtros</a><% } %>
-  </div>
-</form>
-
-<section aria-labelledby="titulo-resultados">
-  <h2 id="titulo-resultados" class="resultados-titulo">
-    <%= resultados.length === 1 ? '1 comercio encontrado' : `${resultados.length} comercios encontrados` %>
-  </h2>
-  <% if (!resultados.length) { %>
-    <p>No encontramos comercios con esos filtros. Probá con otra palabra o elegí «Todas las zonas».</p>
-  <% } else { %>
-    <div class="grilla-comercios">
-      <% resultados.forEach((c) => { %><%- include('partials/tarjeta-comercio', { c }) %><% }) %>
-    </div>
-  <% } %>
 </section>
+
+<div class="container">
+  <nav class="chips-rubros" aria-label="Filtrar por rubro">
+    <ul>
+      <li><a href="<%= urlRubro('') %>" <%- filtros.rubro ? '' : 'aria-current="page"' %>>Todos</a></li>
+      <% cfg.RUBROS.forEach((r) => { %>
+        <li><a href="<%= urlRubro(r.id) %>" <%- filtros.rubro === r.id ? 'aria-current="page"' : '' %>><%= r.nombre %></a></li>
+      <% }) %>
+    </ul>
+  </nav>
+
+  <section aria-labelledby="titulo-resultados">
+    <div class="resultados-encabezado">
+      <h2 id="titulo-resultados" class="resultados-titulo">
+        <%= resultados.length === 1 ? '1 comercio encontrado' : `${resultados.length} comercios encontrados` %>
+      </h2>
+      <% if (filtros.q || filtros.rubro || filtros.zona) { %><a href="/directorio">Limpiar filtros</a><% } %>
+    </div>
+    <% if (!resultados.length) { %>
+      <div class="sin-resultados">
+        <p><strong>No encontramos comercios con esos filtros.</strong></p>
+        <p>Probá con otra palabra o elegí «Todas las zonas».</p>
+        <a href="/directorio" role="button" class="secondary outline">Ver todos los comercios</a>
+      </div>
+    <% } else { %>
+      <div class="grilla-comercios">
+        <% resultados.forEach((c) => { %><%- include('partials/tarjeta-comercio', { c }) %><% }) %>
+      </div>
+    <% } %>
+  </section>
+</div>
 
 <%- include('partials/footer') %>

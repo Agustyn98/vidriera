@@ -60,7 +60,7 @@
   <form method="post" action="/panel/reclamar" class="form-reclamar">
     <label for="codigo">Código de la vista previa</label>
     <div role="group">
-      <input type="text" id="codigo" name="codigo" required maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" class="campo-codigo" aria-describedby="ayuda-reclamar">
+      <input type="text" id="codigo" name="codigo" required maxlength="9" placeholder="XXXX-XXXX" value="<%= codigo %>" autocomplete="off" class="campo-codigo" aria-describedby="ayuda-reclamar">
       <button type="submit">Reclamar</button>
     </div>
     <small id="ayuda-reclamar">Está en el link que te enviamos: vidriera.com.ar/preview/<strong>CÓDIGO</strong>.</small>

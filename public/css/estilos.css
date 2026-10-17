@@ -179,6 +179,7 @@ footer.sitio a {
   list-style: none;
   padding: 0;
   margin: 0;
+  flex-wrap: wrap; /* con la letra agrandada, los enlaces pasan a la línea de abajo */
 }
 
 .pie li {
@@ -484,22 +485,131 @@ footer.sitio a {
 }
 
 /* Directorio */
+.directorio-hero {
+  background: linear-gradient(135deg, var(--azul) 0%, #0e4a6b 60%, var(--turquesa-oscuro) 100%);
+  color: var(--blanco);
+  padding-block: 3rem 2.5rem;
+}
+
+.directorio-hero hgroup {
+  margin-bottom: 1.75rem;
+}
+
+.directorio-hero h1 {
+  color: var(--blanco);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.directorio-hero hgroup p:last-child {
+  color: #e4f0f7;
+  font-size: 1.15rem;
+}
+
 .buscador {
+  background: var(--blanco);
+  border-radius: 0.9rem;
+  padding: 1.1rem 1.25rem 0.2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin: 0;
+}
+
+.buscador-campos {
+  display: grid;
+  gap: 0 1rem;
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+
+@media (min-width: 768px) {
+  .buscador-campos {
+    grid-template-columns: 2fr 1fr 1fr auto;
+  }
+}
+
+.buscador input,
+.buscador select,
+.buscador button {
+  border-radius: 0.5rem;
+}
+
+.buscador button {
+  padding-inline: 2rem;
+  margin-bottom: var(--pico-spacing);
+}
+
+/* Accesos rápidos por rubro */
+nav.chips-rubros ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 1.75rem 0 1.5rem;
+}
+
+.chips-rubros li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chips-rubros li a {
+  display: inline-block;
+  margin: 0;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--celeste-borde);
+  border-radius: 999px;
+  background: var(--blanco);
+  color: var(--azul);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.chips-rubros li a:hover {
   background: var(--celeste);
-  border-radius: 0.75rem;
-  padding: 1.2rem 1.2rem 1rem;
-  margin-bottom: 2rem;
+}
+
+.chips-rubros li a[aria-current='page'] {
+  background: var(--azul);
+  border-color: var(--azul);
+  color: var(--blanco);
+  font-weight: 700;
+}
+
+.resultados-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
 }
 
 .resultados-titulo {
   font-size: 1.15rem;
+  margin: 0;
+}
+
+.sin-resultados {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background: var(--celeste);
+  border-radius: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.sin-resultados p {
+  margin-bottom: 0.4rem;
+}
+
+.sin-resultados [role='button'] {
+  margin-top: 0.75rem;
 }
 
 .grilla-comercios {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.5rem;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .tarjeta-comercio {
@@ -509,31 +619,56 @@ footer.sitio a {
   margin: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--celeste-borde);
-  box-shadow: none;
-  transition: box-shadow 0.15s, transform 0.15s;
+  border: 1px solid #e3e9ee;
+  border-radius: 0.9rem;
+  box-shadow: 0 2px 8px rgba(11, 42, 74, 0.06);
 }
 
-.tarjeta-comercio:hover,
 .tarjeta-comercio:focus-within {
-  box-shadow: 0 6px 18px rgba(11, 42, 74, 0.15);
-  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(11, 42, 74, 0.16);
 }
 
-.tarjeta-comercio img {
+@media (prefers-reduced-motion: no-preference) {
+  .tarjeta-comercio {
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .tarjeta-foto img {
+    transition: transform 0.3s;
+  }
+
+  .tarjeta-comercio:hover {
+    box-shadow: 0 10px 24px rgba(11, 42, 74, 0.16);
+    transform: translateY(-3px);
+  }
+
+  .tarjeta-comercio:hover .tarjeta-foto img {
+    transform: scale(1.04);
+  }
+}
+
+.tarjeta-foto {
+  position: relative;
+  overflow: hidden;
+}
+
+.tarjeta-foto img {
   width: 100%;
-  height: 160px;
+  height: 180px;
   object-fit: cover;
   display: block;
 }
 
 .tarjeta-cuerpo {
-  padding: 1rem 1.1rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem 1.15rem 1rem;
 }
 
 .tarjeta-cuerpo h3 {
   font-size: 1.15rem;
-  margin-bottom: 0.25rem;
+  margin: 0 0 0.4rem;
 }
 
 .enlace-tarjeta {
@@ -557,27 +692,43 @@ footer.sitio a {
 }
 
 .tarjeta-cuerpo .meta {
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--turquesa-oscuro);
+  margin-bottom: 0.3rem;
 }
 
-.tarjeta-cuerpo p:last-child {
-  font-size: 0.95rem;
+.tarjeta-descripcion {
+  font-size: 0.93rem;
+  color: var(--texto-suave);
+  margin-bottom: 0.75rem;
+}
+
+.tarjeta-ver {
+  margin: auto 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--turquesa-oscuro);
 }
 
 .es-destacado {
-  border: 2px solid var(--turquesa-oscuro);
+  border: 2px solid #e0a800;
 }
 
 .etiqueta-destacado {
-  display: inline-block;
-  background: var(--azul);
-  color: var(--blanco);
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  margin: 0;
+  background: #ffd54a;
+  color: #1c2b3a;
   font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.1rem 0.6rem;
+  padding: 0.15rem 0.65rem;
   border-radius: 999px;
-  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 /* Landing de comercio: página independiente, sin el header ni el footer de Vidriera */
@@ -609,6 +760,33 @@ footer.sitio a {
 .barra-preview a {
   color: #8fe3df;
   font-weight: 700;
+}
+
+.barra-preview p:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+}
+
+.form-reclamar-preview {
+  display: inline;
+  margin: 0;
+}
+
+.barra-preview .boton-reclamar {
+  width: auto;
+  margin: 0;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: #ffd54a;
+  border-color: #ffd54a;
+  color: #1c2b3a;
+}
+
+.ya-tengo-cuenta {
+  opacity: 0.9;
 }
 
 .etiqueta-preview {
@@ -644,10 +822,10 @@ footer.sitio a {
 }
 
 .landing-pie {
+  --pico-color: #dbe7f1;
   background: var(--l-fondo);
   color: #dbe7f1;
   padding-block: 1.5rem 1rem;
-  margin-top: 2rem;
   text-align: center;
 }
 
@@ -701,6 +879,42 @@ footer.sitio a {
   color: #f1f5f8;
 }
 
+/* Hero con la primera foto del comercio de fondo, tapada con el color de la plantilla
+   para que el texto blanco mantenga el contraste (más tapada del lado del texto). */
+.landing-hero.con-foto {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--l-fondo) 90%, transparent),
+      color-mix(in srgb, var(--l-fondo) 82%, transparent) 55%,
+      color-mix(in srgb, var(--l-fondo) 55%, transparent)),
+    var(--foto-hero) center / cover no-repeat,
+    var(--l-fondo);
+  display: flex;
+  align-items: center;
+  min-height: min(72vh, 36rem);
+  padding-block: 5rem 4rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 767px) {
+  .landing-hero.con-foto {
+    background:
+      linear-gradient(color-mix(in srgb, var(--l-fondo) 86%, transparent), color-mix(in srgb, var(--l-fondo) 86%, transparent)),
+      var(--foto-hero) center / cover no-repeat,
+      var(--l-fondo);
+    min-height: auto;
+    padding-block: 3.5rem 3rem;
+  }
+}
+
+.landing-hero.con-foto .container {
+  width: 100%;
+}
+
+.landing-hero [role='button'] {
+  text-shadow: none;
+}
+
 .landing-rubro {
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -747,43 +961,160 @@ a.boton-llamar {
   --pico-color: var(--azul);
 }
 
-.landing-cuerpo {
-  padding-block: 2rem 1rem;
+/* Secciones a todo el ancho, con fondos alternados */
+.landing-seccion {
+  padding-block: 3.5rem 2.5rem;
 }
 
-.landing-cuerpo h2 {
+.landing-seccion:nth-child(even) {
+  background: #f4f6f8;
+}
+
+.landing-seccion h2 {
   color: var(--l-acento);
-  font-size: 1.4rem;
-  border-bottom: 3px solid var(--l-acento);
-  padding-bottom: 0.3rem;
-  display: inline-block;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.landing-seccion h2::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 4px;
+  margin: 0.6rem auto 0;
+  border-radius: 2px;
+  background: var(--l-acento);
+}
+
+.landing-seccion h3 {
+  color: var(--l-acento);
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
 }
 
 .galeria {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  margin-bottom: 2rem;
 }
 
 .galeria img {
   width: 100%;
-  height: 240px;
+  height: 260px;
   object-fit: cover;
-  border-radius: 0.6rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(16, 32, 48, 0.12);
 }
 
-.landing-datos {
+/* Precios estilo carta: nombre ........ precio */
+.menu-precios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 0 3rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.menu-precios li {
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-block: 0.7rem;
+  border-bottom: 1px solid #dde3e9;
+  margin: 0;
+}
+
+.menu-nombre {
+  font-weight: 500;
+}
+
+.menu-puntos {
+  flex: 1;
+  min-width: 1rem;
+  border-bottom: 2px dotted #b5c0ca;
+  transform: translateY(-0.3rem);
+}
+
+.menu-precio {
+  font-weight: 700;
+  color: var(--l-acento);
+  white-space: nowrap;
+}
+
+.landing-info {
   align-items: start;
+  gap: 2.5rem;
+}
+
+.landing-mapa iframe {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(16, 32, 48, 0.12);
+}
+
+.landing-mapa p {
+  margin: 0.6rem 0 0;
+  text-align: right;
+}
+
+.landing-mapa a {
+  color: var(--l-acento);
+  font-weight: 700;
+}
+
+/* Botón flotante de WhatsApp */
+.whatsapp-flotante {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: #0b7a3e;
+  color: var(--blanco);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.whatsapp-flotante:hover,
+.whatsapp-flotante:focus-visible {
+  background: #08632f;
+  color: var(--blanco);
+}
+
+.whatsapp-flotante .icono {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .whatsapp-flotante {
+    transition: transform 0.15s ease;
+  }
+
+  .whatsapp-flotante:hover {
+    transform: scale(1.07);
+  }
+}
+
+/* Que el botón flotante no tape el texto del pie en celulares */
+@media (max-width: 767px) {
+  .landing-pie {
+    padding-bottom: 5rem;
+  }
 }
 
 .num {
   text-align: right;
   white-space: nowrap;
-}
-
-.tabla-precios th[scope='row'] {
-  font-weight: 500;
 }
 
 .lista-contacto {
@@ -905,6 +1236,20 @@ a.boton-llamar {
   white-space: nowrap;
 }
 
+/* Operaciones: muchas columnas, letra un poco menor para que entren en pantallas comunes */
+.tabla-operaciones {
+  font-size: 0.8rem;
+}
+
+.tabla-operaciones th,
+.tabla-operaciones td {
+  padding-inline: 0.5rem;
+}
+
+.sin-corte {
+  white-space: nowrap;
+}
+
 .celda-acciones > * {
   margin: 0 0.3rem 0.3rem 0;
 }
@@ -986,6 +1331,8 @@ a.boton-llamar {
 
 .datos-comprobante dd {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere; /* emails y números largos no se salen de la pantalla */
 }
 
 .datos-comprobante .total dt,

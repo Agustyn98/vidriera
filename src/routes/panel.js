@@ -5,6 +5,7 @@ const subidas = require('../subidas');
 const operaciones = require('../operaciones');
 const pagos = require('../pagos');
 const { reclamar } = require('../reclamo');
+const { normalizarCodigo } = require('../helpers');
 const { soloComerciante } = require('../middleware/auth');
 
 const router = express.Router();
@@ -16,6 +17,15 @@ router.get('/panel', (req, res) => {
     mantenimientoHasta: operaciones.mantenimientoHasta(c.id),
   }));
   res.render('panel/index', { titulo: 'Mi panel', comercios: lista, codigo: '' });
+});
+
+// Desde el botón "Ingresar" de la vista previa: después del login llega acá con el código ya cargado.
+router.get('/panel/reclamar', (req, res) => {
+  const lista = comercios.delUsuario(req.session.usuario.id).map((c) => ({
+    ...c,
+    mantenimientoHasta: operaciones.mantenimientoHasta(c.id),
+  }));
+  res.render('panel/index', { titulo: 'Mi panel', comercios: lista, codigo: normalizarCodigo(req.query.codigo) });
 });
 
 router.post('/panel/reclamar', (req, res) => {

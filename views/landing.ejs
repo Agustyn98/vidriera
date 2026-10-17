@@ -13,6 +13,11 @@
     comercio.horarios.length && { id: 'horarios', nombre: 'Horarios' },
     { id: 'contacto', nombre: 'Contacto' },
   ].filter(Boolean);
+  // La primera foto va de fondo del hero. Se escapan comillas y paréntesis para que no rompa el url() del CSS.
+  const fotoHero = comercio.fotos[0] && encodeURI(comercio.fotos[0]).replace(/['()]/g, (c) => '%' + c.charCodeAt(0).toString(16));
+  const zona = cfg.nombreZona(comercio.zona);
+  const consultaMapa = comercio.direccion && encodeURIComponent(`${comercio.direccion}${comercio.direccion.includes(zona) ? '' : `, ${zona}`}, Mendoza, Argentina`);
+  const iconoWa = '<svg class="icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
 %>
 <!doctype html>
 <html lang="es" data-theme="light">
@@ -39,9 +44,16 @@
         </p>
         <p>
           <% if (!comercio.duenoId) { %>
-            Código <strong class="codigo"><%= comercio.previewToken %></strong> ·
-            <a href="/registro?codigo=<%= comercio.previewToken %>">Crear cuenta</a> ·
-            <a href="/login">Ingresar</a>
+            Código <strong class="codigo"><%= comercio.previewToken %></strong>
+            <% if (usuario && usuario.rol === 'comerciante') { %>
+              <form method="post" action="/panel/reclamar" class="form-reclamar-preview">
+                <input type="hidden" name="codigo" value="<%= comercio.previewToken %>">
+                <button type="submit" class="boton-reclamar">Reclamar esta página</button>
+              </form>
+            <% } else if (!usuario) { %>
+              <a href="/registro?codigo=<%= comercio.previewToken %>" role="button" class="boton-reclamar">Reclamar esta página</a>
+              <span class="ya-tengo-cuenta">¿Ya tenés cuenta? <a href="/panel/reclamar?codigo=<%= comercio.previewToken %>">Ingresar</a></span>
+            <% } %>
           <% } else if (comercio.estado === 'pendiente_revision') { %>
             Pago recibido: la estamos revisando para publicarla.
           <% } else if (usuario && usuario.id === comercio.duenoId) { %>
@@ -68,70 +80,77 @@
         <div class="container"><p class="flash flash-<%= flash.tipo %>" role="<%= flash.tipo === 'error' ? 'alert' : 'status' %>"><%= flash.texto %></p></div>
       <% } %>
 
-      <section class="landing-hero" aria-labelledby="titulo-comercio">
+      <section class="landing-hero<%= fotoHero ? ' con-foto' : '' %>" aria-labelledby="titulo-comercio"<% if (fotoHero) { %> style="--foto-hero: url('<%= fotoHero %>')"<% } %>>
         <div class="container">
           <p class="landing-rubro"><%= cfg.nombreRubro(comercio.rubro) %> · <%= cfg.nombreZona(comercio.zona) %></p>
           <h1 id="titulo-comercio"><%= comercio.nombre %></h1>
           <p class="lead"><%= comercio.descripcion %></p>
           <p class="acciones">
-            <% if (wa) { %><a href="<%= wa %>" role="button" class="boton-whatsapp" target="_blank" rel="noopener"><svg class="icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>Escribir por WhatsApp<span class="visualmente-oculto"> (se abre en otra pestaña)</span></a><% } %>
+            <% if (wa) { %><a href="<%= wa %>" role="button" class="boton-whatsapp" target="_blank" rel="noopener"><%- iconoWa %>Escribir por WhatsApp<span class="visualmente-oculto"> (se abre en otra pestaña)</span></a><% } %>
             <% if (tel) { %><a href="<%= tel %>" role="button" class="boton-llamar"><svg class="icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>Llamar</a><% } %>
           </p>
         </div>
       </section>
 
-      <div class="container landing-cuerpo">
+      <div class="landing-secciones">
         <% if (comercio.fotos.length) { %>
-          <section id="fotos" aria-labelledby="titulo-fotos">
-            <h2 id="titulo-fotos">Fotos</h2>
-            <div class="galeria">
-              <% comercio.fotos.forEach((url, i) => { %>
-                <img src="<%= url %>" alt="<%= comercio.nombre %>, imagen <%= i + 1 %> de <%= comercio.fotos.length %>" width="600" height="400" loading="<%= i < 2 ? 'eager' : 'lazy' %>">
-              <% }) %>
+          <section id="fotos" class="landing-seccion" aria-labelledby="titulo-fotos">
+            <div class="container">
+              <h2 id="titulo-fotos">Fotos</h2>
+              <div class="galeria">
+                <% comercio.fotos.forEach((url, i) => { %>
+                  <img src="<%= url %>" alt="<%= comercio.nombre %>, imagen <%= i + 1 %> de <%= comercio.fotos.length %>" width="600" height="400" loading="<%= i < 2 ? 'eager' : 'lazy' %>">
+                <% }) %>
+              </div>
             </div>
           </section>
         <% } %>
 
-        <div class="grid landing-datos">
-          <% if (comercio.productos.length) { %>
-            <section id="productos" aria-labelledby="titulo-productos">
+        <% if (comercio.productos.length) { %>
+          <section id="productos" class="landing-seccion" aria-labelledby="titulo-productos">
+            <div class="container">
               <h2 id="titulo-productos">Productos y precios</h2>
-              <table class="tabla-precios">
-                <caption class="visualmente-oculto">Productos de <%= comercio.nombre %> y sus precios</caption>
-                <thead><tr><th scope="col">Producto</th><th scope="col" class="num">Precio</th></tr></thead>
-                <tbody>
-                  <% comercio.productos.forEach((p) => { %>
-                    <tr><th scope="row"><%= p.nombre %></th><td class="num"><%= h.pesos(p.precio) %></td></tr>
-                  <% }) %>
-                </tbody>
-              </table>
-            </section>
-          <% } %>
-
-          <div>
-            <% if (comercio.horarios.length) { %>
-              <section id="horarios" aria-labelledby="titulo-horarios">
-                <h2 id="titulo-horarios">Horarios</h2>
-                <table>
-                  <caption class="visualmente-oculto">Horarios de atención</caption>
-                  <tbody>
-                    <% comercio.horarios.forEach((x) => { %>
-                      <tr><th scope="row"><%= x.dias %></th><td><%= x.horas %></td></tr>
-                    <% }) %>
-                  </tbody>
-                </table>
-              </section>
-            <% } %>
-            <section id="contacto" aria-labelledby="titulo-contacto">
-              <h2 id="titulo-contacto">Contacto y ubicación</h2>
-              <ul class="lista-contacto">
-                <% if (comercio.direccion) { %><li><strong>Dirección:</strong> <%= comercio.direccion %></li><% } %>
-                <% if (comercio.whatsapp) { %><li><strong>WhatsApp:</strong> <%= comercio.whatsapp %></li><% } %>
-                <% if (comercio.telefono) { %><li><strong>Teléfono:</strong> <%= comercio.telefono %></li><% } %>
+              <ul class="menu-precios">
+                <% comercio.productos.forEach((p) => { %>
+                  <li><span class="menu-nombre"><%= p.nombre %></span><span class="menu-puntos" aria-hidden="true"></span><span class="menu-precio"><%= h.pesos(p.precio) %></span></li>
+                <% }) %>
               </ul>
-            </section>
+            </div>
+          </section>
+        <% } %>
+
+        <section id="contacto" class="landing-seccion" aria-labelledby="titulo-contacto">
+          <div class="container">
+            <h2 id="titulo-contacto">Horarios y contacto</h2>
+            <div class="<%= consultaMapa ? 'grid ' : '' %>landing-info">
+              <div>
+                <% if (comercio.horarios.length) { %>
+                  <h3 id="horarios">Horarios</h3>
+                  <table>
+                    <caption class="visualmente-oculto">Horarios de atención</caption>
+                    <tbody>
+                      <% comercio.horarios.forEach((x) => { %>
+                        <tr><th scope="row"><%= x.dias %></th><td><%= x.horas %></td></tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                <% } %>
+                <h3>Contacto</h3>
+                <ul class="lista-contacto">
+                  <% if (comercio.direccion) { %><li><strong>Dirección:</strong> <%= comercio.direccion %></li><% } %>
+                  <% if (comercio.whatsapp) { %><li><strong>WhatsApp:</strong> <%= comercio.whatsapp %></li><% } %>
+                  <% if (comercio.telefono) { %><li><strong>Teléfono:</strong> <%= comercio.telefono %></li><% } %>
+                </ul>
+              </div>
+              <% if (consultaMapa) { %>
+                <div class="landing-mapa">
+                  <iframe src="https://maps.google.com/maps?q=<%= consultaMapa %>&amp;z=16&amp;output=embed" title="Mapa con la ubicación de <%= comercio.nombre %>" width="600" height="360" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                  <p><a href="https://www.google.com/maps/search/?api=1&amp;query=<%= consultaMapa %>" target="_blank" rel="noopener">Cómo llegar<span class="visualmente-oculto"> (se abre en otra pestaña)</span></a></p>
+                </div>
+              <% } %>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </main>
 
@@ -141,6 +160,12 @@
         <p><small>© <%= new Date().getFullYear() %> <%= comercio.nombre %> · Hecho con <a href="<%= sitio %>/">Vidriera</a></small></p>
       </div>
     </footer>
+
+    <% if (wa) { %>
+      <aside aria-label="Contacto rápido">
+        <a href="<%= wa %>" class="whatsapp-flotante" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp (se abre en otra pestaña)"><%- iconoWa %></a>
+      </aside>
+    <% } %>
   </div>
 </body>
 </html>
