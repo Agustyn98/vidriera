@@ -52,6 +52,11 @@
     </fieldset>
   <% } %>
 
+  <label for="dominio">Dirección web (dominio)</label>
+  <input type="text" id="dominio" name="dominio" value="<%= valores.dominio || '' %>" maxlength="70" placeholder="tucomercio<%= cfg.DOMINIOS.sufijo %>" autocapitalize="off" autocomplete="off" spellcheck="false" <%- h.invalido(errores, 'dominio', 'ayuda-dominio') %>>
+  <small id="ayuda-dominio">Termina en <%= cfg.DOMINIOS.sufijo %>, por ejemplo donvicente<%= cfg.DOMINIOS.sufijo %>. Si escribís solo el nombre, se agrega <%= cfg.DOMINIOS.sufijo %>.<% if (!valores.id) { %> Si lo dejás vacío, se arma con el nombre del comercio.<% } %></small>
+  <%- h.errorCampo(errores, 'dominio') %>
+
   <label for="descripcion">Descripción</label>
   <textarea id="descripcion" name="descripcion" rows="4" maxlength="600" required <%- h.invalido(errores, 'descripcion', 'ayuda-descripcion') %>><%= valores.descripcion || '' %></textarea>
   <small id="ayuda-descripcion">Contá qué ofrecés y qué te diferencia. Entre 20 y 600 caracteres.</small>

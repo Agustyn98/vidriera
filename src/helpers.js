@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const { db } = require('./db');
+const { DOMINIOS } = require('./config');
 
 const ZONA_HORARIA = 'America/Argentina/Mendoza';
 
@@ -58,6 +59,32 @@ function nuevoCodigoPreview() {
     codigo = `${c.slice(0, 4)}-${c.slice(4)}`;
   } while (existe.get(codigo));
   return codigo;
+}
+
+// "https://www.DonVicente.com.ar/" → "donvicente.com.ar"; "donvicente" → "donvicente.com.ar".
+function normalizarDominio(texto) {
+  const d = String(texto || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/.*$/, '');
+  return d && !d.includes('.') ? d + DOMINIOS.sufijo : d;
+}
+
+function dominioLibre(dominio, id = null) {
+  return dominio !== DOMINIOS.sitio && !db.prepare('SELECT 1 FROM comercios WHERE dominio = ? AND id IS NOT ?').get(dominio, id);
+}
+
+function dominioUnico(slug) {
+  let dominio = slug + DOMINIOS.sufijo;
+  for (let i = 2; !dominioLibre(dominio); i++) dominio = `${slug}-${i}${DOMINIOS.sufijo}`;
+  return dominio;
+}
+
+// Link a la landing publicada: con la demo de dominios activa, el dominio propio del comercio.
+function urlComercio(c) {
+  return DOMINIOS.activo && c.dominio ? `http://${c.dominio}/` : `/c/${c.slug}`;
 }
 
 function normalizarCodigo(codigo) {
@@ -129,6 +156,10 @@ module.exports = {
   slugUnico,
   nuevoCodigoPreview,
   normalizarCodigo,
+  normalizarDominio,
+  dominioLibre,
+  dominioUnico,
+  urlComercio,
   soloDigitos,
   linkWhatsapp,
   linkTelefono,

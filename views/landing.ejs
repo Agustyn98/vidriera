@@ -4,6 +4,8 @@
   const wa = h.linkWhatsapp(comercio.whatsapp, comercio.nombre);
   const tel = h.linkTelefono(comercio.telefono || comercio.whatsapp);
   const descripcion = `${comercio.nombre}: ${cfg.nombreRubro(comercio.rubro)} en ${cfg.nombreZona(comercio.zona)}. ${comercio.descripcion.slice(0, 120)}`;
+  // En su dominio propio, los links a Vidriera tienen que apuntar al sitio principal.
+  const sitio = locals.enDominio ? `http://${cfg.DOMINIOS.sitio}` : '';
   const colorTema = { clasica: '#0b2a4a', calida: '#6e2817', natural: '#2c451c' }[comercio.plantilla] || '#0b2a4a';
   const secciones = [
     comercio.fotos.length && { id: 'fotos', nombre: 'Fotos' },
@@ -33,7 +35,7 @@
       <div class="container">
         <p>
           <span class="etiqueta-preview">Vista previa</span>
-          Así se va a ver tu página. Todavía no está publicada.
+          Así se va a ver tu página<% if (comercio.dominio) { %> en <strong><%= comercio.dominio %></strong><% } %>. Todavía no está publicada.
         </p>
         <p>
           <% if (!comercio.duenoId) { %>
@@ -136,7 +138,7 @@
     <footer class="landing-pie">
       <div class="container">
         <p><strong><%= comercio.nombre %></strong><% if (comercio.direccion) { %> · <%= comercio.direccion %><% } %></p>
-        <p><small>© <%= new Date().getFullYear() %> <%= comercio.nombre %> · Hecho con <a href="/">Vidriera</a></small></p>
+        <p><small>© <%= new Date().getFullYear() %> <%= comercio.nombre %> · Hecho con <a href="<%= sitio %>/">Vidriera</a></small></p>
       </div>
     </footer>
   </div>

@@ -5,6 +5,7 @@ const http = require('http');
 const https = require('https');
 const { db } = require('./db');
 const app = require('./app');
+const { DOMINIOS } = require('./config');
 
 const PUERTO = Number(process.env.PORT) || 3000;
 
@@ -19,6 +20,7 @@ servidor.listen(PUERTO, () => {
   const protocolo = HTTPS_CERT && HTTPS_KEY ? 'https' : 'http';
   console.log(`Vidriera funcionando en ${protocolo}://localhost:${PUERTO}`);
   console.log(`Modo de pagos: ${process.env.PAGOS_MODO || 'simulado'}`);
+  if (DOMINIOS.activo) console.log(`Dominios de demo activos: abrí "npm run chrome-demo" y entrá a http://${DOMINIOS.sitio}`);
   const { n } = db.prepare('SELECT COUNT(*) AS n FROM usuarios').get();
   if (!n) console.log('La base está vacía: corré "npm run seed" para cargar los datos de demo.');
 });

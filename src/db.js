@@ -34,8 +34,11 @@ CREATE TABLE IF NOT EXISTS comercios (
   estado          TEXT NOT NULL DEFAULT 'vista_previa'
                   CHECK (estado IN ('vista_previa', 'pendiente_revision', 'publicado', 'suspendido')),
   previewToken    TEXT UNIQUE,
-  destacadoHasta  TEXT
+  destacadoHasta  TEXT,
+  dominio         TEXT  -- dominio propio, por ejemplo donvicente.com.ar
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS comercios_dominio ON comercios (dominio);
 
 CREATE TABLE IF NOT EXISTS operaciones (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,6 +53,12 @@ CREATE TABLE IF NOT EXISTS operaciones (
   fecha           TEXT NOT NULL
 );
 `;
+
+// Migración: bases creadas antes de que existiera el dominio propio.
+const columnas = db.prepare('PRAGMA table_info(comercios)').all();
+if (columnas.length && !columnas.some((c) => c.name === 'dominio')) {
+  db.exec("ALTER TABLE comercios ADD COLUMN dominio TEXT; UPDATE comercios SET dominio = slug || '.com.ar';");
+}
 
 db.exec(ESQUEMA);
 

@@ -16,6 +16,7 @@ const USUARIOS = [
 const COMERCIOS = [
   {
     nombre: 'Pizzería Don Vicente',
+    dominio: 'donvicente.com.ar',
     rubro: 'gastronomia',
     zona: 'godoy-cruz',
     plantilla: 'calida',
@@ -38,6 +39,7 @@ const COMERCIOS = [
   },
   {
     nombre: 'Vinoteca El Lagar',
+    dominio: 'vinotecaellagar.com.ar',
     rubro: 'vinos',
     zona: 'lujan',
     plantilla: 'clasica',
@@ -210,6 +212,7 @@ const COMERCIOS = [
 // El comercio en Vista Previa que reclama el comerciante de prueba durante la demo.
 const VISTA_PREVIA = {
   nombre: 'Panadería La Espiga',
+  dominio: 'laespiga.com.ar',
   rubro: 'panaderias',
   zona: 'godoy-cruz',
   plantilla: 'calida',
@@ -244,9 +247,9 @@ const codigo = () => `SEED-${String(++n).padStart(4, '0')}`;
 
 const insertarComercio = db.prepare(`
   INSERT INTO comercios (duenoId, nombre, slug, rubro, zona, descripcion, whatsapp, telefono, direccion,
-                         horarios, fotos, productos, plantilla, estado, previewToken, destacadoHasta)
+                         horarios, fotos, productos, plantilla, estado, previewToken, destacadoHasta, dominio)
   VALUES (NULL, @nombre, @slug, @rubro, @zona, @descripcion, @whatsapp, @telefono, @direccion,
-          @horarios, @fotos, @productos, @plantilla, @estado, @previewToken, @destacadoHasta)`);
+          @horarios, @fotos, @productos, @plantilla, @estado, @previewToken, @destacadoHasta, @dominio)`);
 
 function cargarComercio(c, estado) {
   insertarComercio.run({
@@ -257,6 +260,7 @@ function cargarComercio(c, estado) {
     productos: JSON.stringify(c.productos),
     estado,
     previewToken: c.previewToken || codigo(),
+    dominio: c.dominio || `${slug(c.nombre)}.com.ar`,
     destacadoHasta: c.destacadoDias ? sumarDias(ahora, c.destacadoDias).toISOString() : null,
   });
 }

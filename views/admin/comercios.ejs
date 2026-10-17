@@ -36,6 +36,7 @@
           <th scope="row">
             <%= c.nombre %>
             <small class="meta-bloque"><%= cfg.nombreRubro(c.rubro) %> · <%= cfg.nombreZona(c.zona) %></small>
+            <% if (c.dominio) { %><small class="meta-bloque"><%= c.dominio %></small><% } %>
             <% if (h.destacadoVigente(c)) { %><small class="meta-bloque">★ Destacado hasta <%= h.fecha(c.destacadoHasta) %></small><% } %>
           </th>
           <td><%- include('../partials/estado', { estado: c.estado }) %></td>
@@ -45,7 +46,7 @@
               <a href="/preview/<%= c.previewToken %>"><span class="visualmente-oculto">Vista previa de <%= c.nombre %>, código </span><span class="codigo"><%= c.previewToken %></span></a>
               <button type="button" class="outline secondary boton-chico" data-copiar="/preview/<%= c.previewToken %>">Copiar link<span class="visualmente-oculto"> de <%= c.nombre %></span></button>
             <% } else if (c.estado === 'publicado') { %>
-              <a href="/c/<%= c.slug %>">Ver landing<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+              <a href="<%= h.urlComercio(c) %>">Ver landing<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
             <% } else { %>—<% } %>
           </td>
           <td class="celda-acciones">

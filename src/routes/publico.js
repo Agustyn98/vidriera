@@ -1,8 +1,21 @@
 const express = require('express');
 const comercios = require('../comercios');
-const { RUBROS, ZONAS } = require('../config');
+const { RUBROS, ZONAS, DOMINIOS } = require('../config');
+const { urlComercio } = require('../helpers');
 
 const router = express.Router();
+
+// Demo de dominios propios: si el pedido llega con el dominio de un comercio, se muestra su landing.
+// Cualquier otra ruta de ese dominio se manda al sitio de Vidriera.
+router.use((req, res, next) => {
+  const host = req.hostname.replace(/^www\./, '');
+  if (!DOMINIOS.activo || host === DOMINIOS.sitio || !host.endsWith(DOMINIOS.sufijo)) return next();
+  const comercio = comercios.porDominio(host);
+  if (!comercio || comercio.estado !== 'publicado' || req.path !== '/') {
+    return res.redirect(`http://${DOMINIOS.sitio}${comercio ? req.originalUrl : '/'}`);
+  }
+  res.render('landing', { titulo: comercio.nombre, comercio, preview: false, enDominio: true });
+});
 
 router.get('/', (req, res) => {
   const destacados = comercios.publicados().filter((c) => c.destacado);
@@ -22,6 +35,7 @@ router.get('/directorio', (req, res) => {
 router.get('/c/:slug', (req, res, next) => {
   const comercio = comercios.porSlug(req.params.slug);
   if (!comercio || comercio.estado !== 'publicado') return next();
+  if (DOMINIOS.activo && comercio.dominio) return res.redirect(urlComercio(comercio));
   res.render('landing', { titulo: comercio.nombre, comercio, preview: false });
 });
 

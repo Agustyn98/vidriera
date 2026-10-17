@@ -16,6 +16,7 @@
       <header>
         <h3 id="comercio-<%= c.id %>"><%= c.nombre %></h3>
         <p class="meta"><%= cfg.nombreRubro(c.rubro) %> · <%= cfg.nombreZona(c.zona) %> · Estado: <%- include('../partials/estado', { estado: c.estado }) %></p>
+        <% if (c.dominio) { %><p class="meta">Dirección web: <strong><%= c.dominio %></strong></p><% } %>
       </header>
 
       <% if (c.estado === 'vista_previa') { %>
@@ -36,7 +37,7 @@
       <footer class="acciones">
         <a href="/panel/comercio/<%= c.id %>" role="button" class="secondary outline">Editar datos<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
         <% if (c.estado === 'publicado') { %>
-          <a href="/c/<%= c.slug %>" role="button" class="secondary outline">Ver mi página<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
+          <a href="<%= h.urlComercio(c) %>" role="button" class="secondary outline">Ver mi página<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
         <% } else if (c.estado !== 'suspendido') { %>
           <a href="/preview/<%= c.previewToken %>" role="button" class="secondary outline">Ver vista previa<span class="visualmente-oculto"> de <%= c.nombre %></span></a>
         <% } %>

@@ -1,11 +1,12 @@
 // Acceso a datos y validación de comercios.
 
 const { db, parsearComercio } = require('./db');
-const { RUBROS, ZONAS, PLANTILLAS } = require('./config');
-const { comoArreglo, normalizar, destacadoVigente, soloDigitos } = require('./helpers');
+const { RUBROS, ZONAS, PLANTILLAS, DOMINIOS } = require('./config');
+const { comoArreglo, normalizar, destacadoVigente, soloDigitos, normalizarDominio, dominioLibre } = require('./helpers');
 
 const porId = (id) => parsearComercio(db.prepare('SELECT * FROM comercios WHERE id = ?').get(id));
 const porSlug = (slug) => parsearComercio(db.prepare('SELECT * FROM comercios WHERE slug = ?').get(slug));
+const porDominio = (dominio) => parsearComercio(db.prepare('SELECT * FROM comercios WHERE dominio = ?').get(dominio));
 const porToken = (token) => parsearComercio(db.prepare('SELECT * FROM comercios WHERE previewToken = ?').get(token));
 
 // Un comercio del dueño indicado, o null (así nunca se accede a uno ajeno).
@@ -37,8 +38,9 @@ function publicados({ q = '', rubro = '', zona = '' } = {}) {
 
 const MAX_FILAS = 20;
 
-// Lee y valida el formulario. `completo` = campos que solo edita el admin; `subidas` = fotos recién subidas.
-function leerFormulario(body, { completo, subidas = { urls: [], error: null } }) {
+// Lee y valida el formulario. `completo` = campos que solo edita el admin; `subidas` = fotos recién subidas;
+// `id` = comercio que se edita (al crear no hay, y el dominio vacío se arma después con el nombre).
+function leerFormulario(body, { completo, subidas = { urls: [], error: null }, id = null }) {
   const errores = {};
   const txt = (campo) => String(body[campo] || '').trim();
 
@@ -58,6 +60,16 @@ function leerFormulario(body, { completo, subidas = { urls: [], error: null } })
     if (!RUBROS.some((r) => r.id === datos.rubro)) errores.rubro = 'Elegí un rubro de la lista.';
     if (!ZONAS.some((z) => z.id === datos.zona)) errores.zona = 'Elegí una zona de la lista.';
     if (!PLANTILLAS.some((p) => p.id === datos.plantilla)) errores.plantilla = 'Elegí una plantilla.';
+  }
+
+  datos.dominio = normalizarDominio(body.dominio);
+  if (!datos.dominio) {
+    if (id) errores.dominio = `Elegí la dirección web de tu página, por ejemplo tucomercio${DOMINIOS.sufijo}.`;
+    else delete datos.dominio;
+  } else if (!new RegExp(`^[a-z0-9]([a-z0-9-]{0,48}[a-z0-9])?${DOMINIOS.sufijo.replaceAll('.', '\\.')}$`).test(datos.dominio)) {
+    errores.dominio = `La dirección tiene que terminar en ${DOMINIOS.sufijo} y usar solo letras, números y guiones, por ejemplo donvicente${DOMINIOS.sufijo}.`;
+  } else if (!dominioLibre(datos.dominio, id)) {
+    errores.dominio = `La dirección ${datos.dominio} ya está en uso. Probá con otra.`;
   }
 
   if (datos.descripcion.length < 20) errores.descripcion = 'Escribí una descripción de al menos 20 caracteres.';
@@ -151,6 +163,7 @@ function crear(datos) {
 module.exports = {
   porId,
   porSlug,
+  porDominio,
   porToken,
   delDueno,
   delUsuario,

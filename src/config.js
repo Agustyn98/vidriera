@@ -69,6 +69,13 @@ const ESTADOS_OPERACION = {
   rechazado: 'Rechazado',
 };
 
+// Dominios propios simulados para la presentación (ver README). Sin DEMO_DOMINIOS=1, las landings se ven en /c/slug.
+const DOMINIOS = {
+  activo: process.env.DEMO_DOMINIOS === '1',
+  sitio: process.env.DOMINIO_SITIO || 'vidriera.com.ar',
+  sufijo: '.com.ar',
+};
+
 const nombreDe = (lista, id) => (lista.find((x) => x.id === id) || {}).nombre || id;
 
 module.exports = {
@@ -80,6 +87,7 @@ module.exports = {
   IMAGENES_DEMO,
   ESTADOS_COMERCIO,
   ESTADOS_OPERACION,
+  DOMINIOS,
   nombreRubro: (id) => nombreDe(RUBROS, id),
   nombreZona: (id) => nombreDe(ZONAS, id),
   nombrePlantilla: (id) => nombreDe(PLANTILLAS, id),

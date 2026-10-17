@@ -2,7 +2,7 @@ const express = require('express');
 const { db, parsearComercio } = require('../db');
 const comercios = require('../comercios');
 const subidas = require('../subidas');
-const { slugUnico, nuevoCodigoPreview } = require('../helpers');
+const { slugUnico, nuevoCodigoPreview, dominioUnico } = require('../helpers');
 const { soloAdmin } = require('../middleware/auth');
 
 const router = express.Router();
@@ -14,6 +14,7 @@ const EJEMPLO = {
   rubro: 'gastronomia',
   zona: 'maipu',
   plantilla: 'clasica',
+  dominio: 'heladeriacordillera.com.ar',
   descripcion:
     'Helados artesanales elaborados todos los días con leche de tambo mendocino y frutas de estación. Sabores clásicos, al agua y opciones sin TACC.',
   whatsapp: '261 555-0190',
@@ -59,10 +60,16 @@ router.post('/admin/comercios/nuevo', subidas.recibirFotos, (req, res) => {
       .status(400)
       .render('admin/comercio-form', { titulo: 'Nueva vista previa', comercio: null, valores: datos, errores });
   }
-  const comercio = comercios.crear({ ...datos, slug: slugUnico(datos.nombre), previewToken: nuevoCodigoPreview() });
+  const slug = slugUnico(datos.nombre);
+  const comercio = comercios.crear({
+    ...datos,
+    slug,
+    dominio: datos.dominio || dominioUnico(slug),
+    previewToken: nuevoCodigoPreview(),
+  });
   req.session.flash = {
     tipo: 'exito',
-    texto: `Vista previa de «${comercio.nombre}» creada. Código para el comerciante: ${comercio.previewToken}.`,
+    texto: `Vista previa de «${comercio.nombre}» creada. Código para el comerciante: ${comercio.previewToken}. Dominio: ${comercio.dominio}.`,
   };
   res.redirect(`/admin/comercios#comercio-${comercio.id}`);
 });
@@ -76,7 +83,11 @@ router.get('/admin/comercios/:id', (req, res, next) => {
 router.post('/admin/comercios/:id', subidas.recibirFotos, (req, res, next) => {
   const comercio = comercios.porId(req.params.id);
   if (!comercio) return next();
-  const { datos, errores } = comercios.leerFormulario(req.body, { completo: true, subidas: subidas.deRequest(req) });
+  const { datos, errores } = comercios.leerFormulario(req.body, {
+    completo: true,
+    subidas: subidas.deRequest(req),
+    id: comercio.id,
+  });
   if (Object.keys(errores).length) {
     return res.status(400).render('admin/comercio-form', {
       titulo: `Editar ${comercio.nombre}`,
