@@ -1,5 +1,8 @@
 // Listas fijas y precios. El precio de cada servicio lo define SIEMPRE el servidor.
 
+const fs = require('fs');
+const path = require('path');
+
 const SERVICIOS = {
   landing: {
     nombre: 'Landing Profesional',
@@ -41,8 +44,11 @@ const ZONAS = [
   { id: 'maipu', nombre: 'Maipú' },
 ];
 
-// Imágenes locales de muestra (en public/img/rubros), para no depender de internet.
-const IMAGENES_DEMO = RUBROS.flatMap((r) => [`/img/rubros/${r.id}-1.svg`, `/img/rubros/${r.id}-2.svg`]);
+// Fotos locales de muestra (en public/img/comercios), para no depender de internet.
+const IMAGENES_DEMO = fs
+  .readdirSync(path.join(__dirname, '..', 'public', 'img', 'comercios'))
+  .filter((f) => f.endsWith('.jpg'))
+  .map((f) => `/img/comercios/${f}`);
 
 const PLANTILLAS = [
   { id: 'clasica', nombre: 'Clásica (azul y turquesa)' },

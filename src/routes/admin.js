@@ -1,6 +1,7 @@
 const express = require('express');
 const { db, parsearComercio } = require('../db');
 const comercios = require('../comercios');
+const subidas = require('../subidas');
 const { slugUnico, nuevoCodigoPreview } = require('../helpers');
 const { soloAdmin } = require('../middleware/auth');
 
@@ -22,7 +23,7 @@ const EJEMPLO = {
     { dias: 'Martes a domingo', horas: '14 a 23' },
     { dias: 'Lunes', horas: 'Cerrado' },
   ],
-  fotos: ['/img/rubros/gastronomia-1.svg', '/img/rubros/gastronomia-2.svg'],
+  fotos: ['/img/comercios/heladeria-cordillera-1.jpg', '/img/comercios/heladeria-cordillera-2.jpg'],
   productos: [
     { nombre: 'Cucurucho 2 sabores', precio: 4500 },
     { nombre: 'Cuarto kilo', precio: 7000 },
@@ -51,8 +52,8 @@ router.get('/admin/comercios/nuevo', (req, res) => {
   res.render('admin/comercio-form', { titulo: 'Nueva vista previa', comercio: null, valores, errores: {} });
 });
 
-router.post('/admin/comercios/nuevo', (req, res) => {
-  const { datos, errores } = comercios.leerFormulario(req.body, { completo: true });
+router.post('/admin/comercios/nuevo', subidas.recibirFotos, (req, res) => {
+  const { datos, errores } = comercios.leerFormulario(req.body, { completo: true, subidas: subidas.deRequest(req) });
   if (Object.keys(errores).length) {
     return res
       .status(400)
@@ -72,10 +73,10 @@ router.get('/admin/comercios/:id', (req, res, next) => {
   res.render('admin/comercio-form', { titulo: `Editar ${comercio.nombre}`, comercio, valores: comercio, errores: {} });
 });
 
-router.post('/admin/comercios/:id', (req, res, next) => {
+router.post('/admin/comercios/:id', subidas.recibirFotos, (req, res, next) => {
   const comercio = comercios.porId(req.params.id);
   if (!comercio) return next();
-  const { datos, errores } = comercios.leerFormulario(req.body, { completo: true });
+  const { datos, errores } = comercios.leerFormulario(req.body, { completo: true, subidas: subidas.deRequest(req) });
   if (Object.keys(errores).length) {
     return res.status(400).render('admin/comercio-form', {
       titulo: `Editar ${comercio.nombre}`,

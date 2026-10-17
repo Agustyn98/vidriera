@@ -4,6 +4,8 @@ Landing pages y directorio de comercios del Gran Mendoza. App del TP3 de Comerci
 
 Node + Express + EJS, SQLite (`vidriera.db`), sesiones con contraseñas cifradas con bcrypt y Pico.css (servido localmente, así la demo no depende de internet).
 
+Las fotos que se suben desde el formulario de un comercio se guardan en la carpeta `uploads/` (no se versiona). Las fotos de los comercios de demo están en `public/img/comercios/` (créditos en `CREDITOS.md`).
+
 ## Instalar y correr
 
 Requisito: Node.js 20 o superior.

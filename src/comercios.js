@@ -37,8 +37,8 @@ function publicados({ q = '', rubro = '', zona = '' } = {}) {
 
 const MAX_FILAS = 20;
 
-// Lee y valida el formulario. `completo` = campos que solo edita el admin.
-function leerFormulario(body, { completo }) {
+// Lee y valida el formulario. `completo` = campos que solo edita el admin; `subidas` = fotos recién subidas.
+function leerFormulario(body, { completo, subidas = { urls: [], error: null } }) {
   const errores = {};
   const txt = (campo) => String(body[campo] || '').trim();
 
@@ -104,11 +104,13 @@ function leerFormulario(body, { completo }) {
     datos.horarios.push({ dias: d, horas: h });
   }
 
-  // Fotos: URLs (las de demo son locales, por ejemplo /img/rubros/gastronomia-1.svg).
+  // Fotos: URLs ya cargadas (locales, por ejemplo /img/comercios/… o /uploads/…, o links https://) más las recién subidas.
   datos.fotos = comoArreglo(body.fotos)
     .map((u) => String(u).trim())
-    .filter(Boolean);
-  if (datos.fotos.some((u) => !/^(\/[\w\-./]+|https?:\/\/\S+)$/i.test(u) || u.length > 300)) {
+    .filter(Boolean)
+    .concat(subidas.urls);
+  if (subidas.error) errores.fotos = subidas.error;
+  else if (datos.fotos.some((u) => !/^(\/[\w\-./]+|https?:\/\/\S+)$/i.test(u) || u.length > 300)) {
     errores.fotos = 'Cada foto tiene que ser una dirección web (https://…) o una imagen de la lista.';
   }
 

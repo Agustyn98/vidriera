@@ -642,6 +642,18 @@ footer.sitio a {
   margin-bottom: 0.4rem;
 }
 
+a.boton-whatsapp,
+a.boton-llamar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.boton-whatsapp .icono,
+.boton-llamar .icono {
+  flex: none;
+}
+
 .boton-whatsapp {
   --pico-background-color: #0b7a3e;
   --pico-border-color: #0b7a3e;
@@ -1032,4 +1044,27 @@ body.checkout {
   .estado {
     padding: 0;
   }
+}
+
+.fila-foto {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fila-foto input {
+  flex: 1;
+}
+
+.fila-foto img {
+  flex: none;
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.subir-fotos {
+  margin-top: 1rem;
 }

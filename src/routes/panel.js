@@ -1,6 +1,7 @@
 const express = require('express');
 const { db } = require('../db');
 const comercios = require('../comercios');
+const subidas = require('../subidas');
 const operaciones = require('../operaciones');
 const pagos = require('../pagos');
 const { reclamar } = require('../reclamo');
@@ -29,10 +30,10 @@ router.get('/panel/comercio/:id', (req, res, next) => {
   res.render('panel/comercio', { titulo: `Editar ${comercio.nombre}`, comercio, valores: comercio, errores: {} });
 });
 
-router.post('/panel/comercio/:id', (req, res, next) => {
+router.post('/panel/comercio/:id', subidas.recibirFotos, (req, res, next) => {
   const comercio = comercios.delDueno(req.params.id, req.session.usuario.id);
   if (!comercio) return next();
-  const { datos, errores } = comercios.leerFormulario(req.body, { completo: false });
+  const { datos, errores } = comercios.leerFormulario(req.body, { completo: false, subidas: subidas.deRequest(req) });
   if (Object.keys(errores).length) {
     return res.status(400).render('panel/comercio', {
       titulo: `Editar ${comercio.nombre}`,

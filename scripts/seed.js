@@ -6,7 +6,7 @@ const { db, ESQUEMA, DB_PATH } = require('../src/db');
 const { sumarDias } = require('../src/helpers');
 
 const ahora = new Date();
-const fotos = (rubro) => [`/img/rubros/${rubro}-1.svg`, `/img/rubros/${rubro}-2.svg`];
+const fotos = (slug) => [`/img/comercios/${slug}-1.jpg`, `/img/comercios/${slug}-2.jpg`];
 
 const USUARIOS = [
   { nombre: 'Administración Vidriera', email: 'admin@vidriera.com.ar', password: 'admin', rol: 'admin' },
@@ -253,7 +253,7 @@ function cargarComercio(c, estado) {
     ...c,
     slug: slug(c.nombre),
     horarios: JSON.stringify(c.horarios),
-    fotos: JSON.stringify(fotos(c.rubro)),
+    fotos: JSON.stringify(fotos(slug(c.nombre))),
     productos: JSON.stringify(c.productos),
     estado,
     previewToken: c.previewToken || codigo(),

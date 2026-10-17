@@ -12,7 +12,7 @@
 %>
 <%- include('errores', { errores }) %>
 
-<form method="post" action="<%= accion %>" novalidate class="form-comercio">
+<form method="post" action="<%= accion %>" enctype="multipart/form-data" novalidate class="form-comercio">
   <% if (completo) { %>
     <fieldset>
       <legend>Datos del comercio</legend>
@@ -102,7 +102,7 @@
 
   <fieldset <%- h.describir(errores, 'fotos', 'ayuda-fotos') %>>
     <legend>Fotos</legend>
-    <small id="ayuda-fotos">Dirección de cada imagen. Podés elegir una de las imágenes de muestra de la lista o pegar un link (https://…).</small>
+    <small id="ayuda-fotos">Subí fotos del negocio desde tu computadora o celular, o pegá el link de una imagen (https://…). Para quitar una foto, borrá su dirección.</small>
     <%- h.errorCampo(errores, 'fotos') %>
     <div id="filas-fotos">
       <% fotos.forEach((u, i) => { %><%- include('fila-foto', { n: i + 1, u }) %><% }) %>
@@ -111,7 +111,10 @@
     <datalist id="imagenes-demo">
       <% cfg.IMAGENES_DEMO.forEach((img) => { %><option value="<%= img %>"></option><% }) %>
     </datalist>
-    <button type="button" class="outline secondary boton-chico" data-agregar="fotos">+ Agregar foto</button>
+    <button type="button" class="outline secondary boton-chico" data-agregar="fotos">+ Agregar link de foto</button>
+
+    <label for="fotosNuevas" class="subir-fotos">Subir fotos del negocio <span class="opcional">(JPG, PNG o WebP, hasta 5 MB cada una)</span></label>
+    <input type="file" id="fotosNuevas" name="fotosNuevas" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
   </fieldset>
 
   <div class="acciones">

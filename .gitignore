@@ -39,3 +39,6 @@ ehthumbs.db
 .idea/
 *.swp
 *.swo
+
+# Fotos subidas por los comercios
+uploads/

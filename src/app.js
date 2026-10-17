@@ -5,6 +5,7 @@ const session = require('express-session');
 const config = require('./config');
 const helpers = require('./helpers');
 const pagos = require('./pagos');
+const { DIR_SUBIDAS } = require('./subidas');
 
 const app = express();
 const RAIZ = path.join(__dirname, '..');
@@ -14,6 +15,7 @@ app.set('views', path.join(RAIZ, 'views'));
 app.disable('x-powered-by');
 
 app.use(express.static(path.join(RAIZ, 'public')));
+app.use('/uploads', express.static(DIR_SUBIDAS));
 app.use('/vendor/pico', express.static(path.join(RAIZ, 'node_modules', '@picocss', 'pico', 'css')));
 app.use(express.urlencoded({ extended: true, limit: '200kb' }));
 
