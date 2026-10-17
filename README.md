@@ -4,6 +4,8 @@ Landing pages y directorio de comercios del Gran Mendoza. App del TP3 de Comerci
 
 ## Cómo arrancar la app
 
+Paso a paso, para cualquiera del equipo: **[COMO_CORRER.md](COMO_CORRER.md)**.
+
 Requisito: Node.js 20 o superior. Los mismos comandos sirven en macOS, Windows y Linux, desde la carpeta `vidriera`:
 
 ```bash
