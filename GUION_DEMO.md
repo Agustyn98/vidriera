@@ -10,7 +10,6 @@ Hace falta Node.js 20 o superior (`node -v` para verificar). En la carpeta `vidr
 
 ```bash
 npm install
-cp .env.example .env    # solo si todavía no existe .env
 ```
 
 ### Dejar la demo lista (cada vez)

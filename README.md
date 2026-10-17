@@ -2,20 +2,31 @@
 
 Landing pages y directorio de comercios del Gran Mendoza. App del TP3 de Comercialización de Servicios.
 
+## Cómo arrancar la app
+
+Requisito: Node.js 20 o superior. Los mismos comandos sirven en macOS, Windows y Linux, desde la carpeta `vidriera`:
+
+```bash
+npm install       # solo la primera vez
+npm run seed      # carga los datos de demo (borra la base)
+npm start         # abrí http://localhost:3000
+```
+
+Usuarios: `admin` / `admin` y `comercio` / `comercio`.
+
+Opcional, para ver cada comercio en su propio dominio (por ejemplo `http://donvicente.com.ar`): con la app andando, en otra terminal:
+
+```bash
+npm run chrome-demo
+```
+
 Node + Express + EJS, SQLite (`vidriera.db`), sesiones con contraseñas cifradas con bcrypt y Pico.css (servido localmente, así la demo no depende de internet).
 
 Las fotos que se suben desde el formulario de un comercio se guardan en la carpeta `uploads/` (no se versiona). Las fotos de los comercios de demo están en `public/img/comercios/` (créditos en `CREDITOS.md`).
 
-## Instalar y correr
+## Configuración
 
-Requisito: Node.js 20 o superior.
-
-```bash
-npm install
-cp .env.example .env    # si todavía no existe
-npm run seed            # borra la base y carga los datos de demo
-npm start               # http://localhost:3000
-```
+No hace falta un `.env`: todo tiene valores por defecto. Para cambiar el puerto, el modo de pagos o activar HTTPS, copiá `.env.example` como `.env` y editalo.
 
 Para volver la demo a cero, repetí `npm run seed` (si el servidor está corriendo, reinicialo también, porque las sesiones viven en memoria).
 
