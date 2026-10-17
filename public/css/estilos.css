@@ -580,21 +580,89 @@ footer.sitio a {
   margin-bottom: 0.5rem;
 }
 
-/* Landing de comercio */
-.aviso-preview {
-  background: #fff1c9;
-  border-bottom: 3px solid #b07d00;
-  color: #4a3500;
-  padding-block: 0.9rem 0.3rem;
+/* Landing de comercio: página independiente, sin el header ni el footer de Vidriera */
+.pagina-landing main {
+  padding-block: 0;
 }
 
-.aviso-preview p {
-  margin-bottom: 0.5rem;
+/* Barra de vista previa: lo único que distingue la preview de la página final */
+.barra-preview {
+  --pico-color: #e8eef3;
+  background: #1c2b3a;
+  color: #e8eef3;
+  font-size: 0.85rem;
+  padding-block: 0.45rem;
 }
 
-.aviso-preview a {
-  color: #4a3500;
+.barra-preview .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.barra-preview p {
+  margin: 0;
+}
+
+.barra-preview a {
+  color: #8fe3df;
   font-weight: 700;
+}
+
+.etiqueta-preview {
+  background: #ffd54a;
+  color: #1c2b3a;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.25rem;
+  margin-right: 0.4rem;
+}
+
+.landing-barra {
+  background: var(--l-fondo);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.landing-barra nav {
+  padding-block: 0.2rem;
+}
+
+.landing-barra a:not([role='button']) {
+  color: #f1f5f8;
+}
+
+.landing-marca {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--blanco) !important;
+  text-decoration: none;
+}
+
+.landing-pie {
+  background: var(--l-fondo);
+  color: #dbe7f1;
+  padding-block: 1.5rem 1rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.landing-pie p {
+  margin-bottom: 0.4rem;
+}
+
+.landing-pie a {
+  color: var(--blanco);
+}
+
+@media (max-width: 767px) {
+  .solo-escritorio {
+    display: none;
+  }
 }
 
 .landing {
@@ -724,12 +792,6 @@ a.boton-llamar {
 
 .lista-contacto li {
   list-style: none;
-}
-
-.hecho-con {
-  text-align: center;
-  color: var(--texto-suave);
-  margin-top: 2rem;
 }
 
 /* Formularios */
