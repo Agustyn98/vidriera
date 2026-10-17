@@ -63,6 +63,8 @@ npm run chrome-demo   # abre un Chrome aparte que manda todo *.com.ar a la app
 - El truco es la opción `--host-resolver-rules` de Chrome: solo afecta a esa ventana. Al cerrarla no queda nada configurado. En ese Chrome no cargan los sitios `.com.ar` reales.
 - Sin `DEMO_DOMINIOS=1` (`npm start`), las landings siguen en `/c/slug`.
 
+Paso a paso, el comando completo y qué hacer si algo falla: [DOMINIOS_DEMO.md](DOMINIOS_DEMO.md).
+
 ## Pagos
 
 Todo el código de pagos está en `src/pagos/`. El resto de la app usa solo `crearPago()` y `verificarPago()`; la interfaz está documentada en `src/pagos/index.js`.
