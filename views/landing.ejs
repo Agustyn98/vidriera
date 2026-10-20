@@ -38,7 +38,12 @@
           Así se va a ver tu página<% if (comercio.dominio) { %> en <strong><%= comercio.dominio %></strong><% } %>. Todavía no está publicada.
         </p>
         <p>
-          <% if (!comercio.duenoId) { %>
+          <% if (!comercio.duenoId && usuario && usuario.rol === 'comerciante') { %>
+            <form method="post" action="/panel/reclamar" class="form-reclamar-preview">
+              <input type="hidden" name="codigo" value="<%= comercio.previewToken %>">
+              <button type="submit" class="boton-chico">Reclamar esta página</button>
+            </form>
+          <% } else if (!comercio.duenoId && !usuario) { %>
             Código <strong class="codigo"><%= comercio.previewToken %></strong> ·
             <a href="/registro?codigo=<%= comercio.previewToken %>">Crear cuenta</a> ·
             <a href="/login">Ingresar</a>

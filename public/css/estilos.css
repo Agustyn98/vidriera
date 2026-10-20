@@ -611,6 +611,17 @@ footer.sitio a {
   font-weight: 700;
 }
 
+.form-reclamar-preview {
+  margin: 0;
+}
+
+.form-reclamar-preview button {
+  margin: 0;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+  width: auto;
+}
+
 .etiqueta-preview {
   background: #ffd54a;
   color: #1c2b3a;
